@@ -48,7 +48,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 
-import butter.droid.base.providers.media.VodoProvider;
+import butter.droid.base.providers.media.MagnetProvider.PelisMagnetProvider;
 import butterknife.Bind;
 import android.support.annotation.Nullable;
 import butter.droid.BuildConfig;
@@ -64,14 +64,11 @@ import butter.droid.base.providers.subs.SubsProvider;
 import butter.droid.base.providers.subs.YSubsProvider;
 import butter.droid.base.torrent.StreamInfo;
 import butter.droid.base.utils.PrefUtils;
-import butter.droid.base.utils.SignUtils;
 import butter.droid.base.youtube.YouTubeData;
-import butter.droid.fragments.dialog.MessageDialogFragment;
 import butter.droid.fragments.MediaContainerFragment;
 import butter.droid.fragments.NavigationDrawerFragment;
 import butter.droid.utils.ToolbarUtils;
 import butter.droid.widget.ScrimInsetsFrameLayout;
-import timber.log.Timber;
 
 /**
  * The main activity that houses the navigation drawer, and controls navigation between fragments
@@ -266,7 +263,7 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
                             .setPositiveButton("Start", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Movie media = new Movie(new VodoProvider(), new YSubsProvider());
+                                    Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
 
                                     media.videoId = "dialogtestvideo";
                                     media.title = "User input test video";
@@ -284,13 +281,13 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
                     builder.show();
                 } else if (YouTubeData.isYouTubeUrl(location)) {
                     Intent i = new Intent(MainActivity.this, TrailerPlayerActivity.class);
-                    Movie media = new Movie(new VodoProvider(), new YSubsProvider());
+                    Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
                     media.title = file_types[index];
                     i.putExtra(TrailerPlayerActivity.DATA, media);
                     i.putExtra(TrailerPlayerActivity.LOCATION, location);
                     startActivity(i);
                 } else {
-                    final Movie media = new Movie(new VodoProvider(), new YSubsProvider());
+                    final Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
                     media.videoId = "bigbucksbunny";
                     media.title = file_types[index];
                     media.subtitles = new HashMap<>();

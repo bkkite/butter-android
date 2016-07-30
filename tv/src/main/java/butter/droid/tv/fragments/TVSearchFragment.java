@@ -34,7 +34,7 @@ import android.text.TextUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import butter.droid.base.providers.media.VodoProvider;
+import butter.droid.base.providers.media.MagnetProvider.PelisMagnetProvider;
 import hugo.weaving.DebugLog;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Media;
@@ -48,7 +48,7 @@ public class TVSearchFragment extends android.support.v17.leanback.app.SearchFra
 	private static final int SEARCH_DELAY_MS = 300;
 
 	//private XProvider mShowsProvider = x
-	private VodoProvider mMovieProvider = new VodoProvider();
+	private PelisMagnetProvider mMovieProvider = new PelisMagnetProvider();
 	private MediaProvider.Filters mSearchFilter = new MediaProvider.Filters();
 
 	private ArrayObjectAdapter mRowsAdapter;

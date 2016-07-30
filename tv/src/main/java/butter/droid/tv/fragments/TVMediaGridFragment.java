@@ -35,7 +35,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import butter.droid.base.providers.media.VodoProvider;
+import butter.droid.base.providers.media.MagnetProvider.PelisMagnetProvider;
 import hugo.weaving.DebugLog;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Media;
@@ -94,7 +94,7 @@ public class TVMediaGridFragment extends VerticalGridFragment implements OnItemV
 
         switch (mCallback.getType()) {
             case MOVIE:
-                mProvider = new VodoProvider();
+                mProvider = new PelisMagnetProvider();
                 break;
             case SHOW:
                 //mProvider = new EZTVProvider();

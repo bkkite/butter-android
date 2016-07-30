@@ -110,7 +110,7 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
 
     private MediaProvider mProvider;
     private Call mCurrentCall;
-    private int mPage = 1;
+    private int mPage = 0;
     private MediaProvider.Filters mFilters = new MediaProvider.Filters();
     private String mGenre;
 
@@ -151,7 +151,7 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
                 });
             mAdapter.clearItems();
             mGenre = mFilters.genre = genre;
-            mFilters.page = 1;
+            mFilters.page =0;
             mCurrentCall = mProvider.getList(new MediaProvider.Filters(mFilters), mCallback);
             setState(State.LOADING);
         }
@@ -319,8 +319,8 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
 
         setState(State.SEARCHING);
         mFilters.keywords = searchQuery;
-        mFilters.page = 1;
-        mPage = 1;
+        mFilters.page = 0;
+        mPage = 0;
         mCurrentCall = mProvider.getList(new MediaProvider.Filters(mFilters), mCallback);
     }
 

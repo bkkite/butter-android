@@ -15,7 +15,7 @@
  * along with Butter. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package butter.droid.base.providers.media;
+package butter.droid.base.providers.media.MagnetProvider;
 
 import android.accounts.NetworkErrorException;
 import android.content.Context;
@@ -24,36 +24,38 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.internal.LinkedTreeMap;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.net.SocketException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
+import butter.droid.base.providers.media.MagnetProvider.MagnetPOJO.MovieMagnet;
+import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Genre;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.utils.LocaleUtils;
-import butter.droid.base.utils.StringUtils;
 
-public class VodoProvider extends MediaProvider {
+public class PelisMagnetProvider extends MediaProvider {
 
-    private static final VodoProvider sMediaProvider = new VodoProvider();
+    private static final PelisMagnetProvider sMediaProvider = new PelisMagnetProvider();
     private static Integer CURRENT_API = 0;
     private static final String[] API_URLS = {
-            "http://vodo.net/popcorn"
+            "http://pelismag.net/api"
     };
     public static String CURRENT_URL = API_URLS[CURRENT_API];
 
     private static Filters sFilters = new Filters();
+
+    private static final String [] GENRE_KEYS = {"Acción", "Aventura", "Animación", "Ciencia Ficción", "Comedia", "Crimen", "Drama", "Terror", "Romance"};
 
     @Override
     protected Call enqueue(Request request, com.squareup.okhttp.Callback requestCallback) {
@@ -82,63 +84,43 @@ public class VodoProvider extends MediaProvider {
         }
 
         ArrayList<NameValuePair> params = new ArrayList<>();
-        params.add(new NameValuePair("limit", "30"));
 
         if (filters == null) {
             filters = new Filters();
         }
 
         if (filters.keywords != null) {
-            params.add(new NameValuePair("query_term", filters.keywords));
+            params.add(new NameValuePair("keywords", filters.keywords));
         }
 
         if (filters.genre != null) {
             params.add(new NameValuePair("genre", filters.genre));
         }
 
-        if (filters.order == Filters.Order.ASC) {
-            params.add(new NameValuePair("order_by", "asc"));
-        } else {
-            params.add(new NameValuePair("order_by", "desc"));
-        }
-
-        if(filters.langCode != null) {
-            params.add(new NameValuePair("lang", filters.langCode));
-        }
-
-        String sort;
-        switch (filters.sort) {
+        switch (filters.sort)
+        {
             default:
-            case POPULARITY:
-                sort = "seeds";
-                break;
-            case YEAR:
-                sort = "year";
+            case ALPHABET:
+                params.add(new NameValuePair("sort_by", "''"));
                 break;
             case DATE:
-                sort = "date_added";
+                params.add(new NameValuePair("sort_by", "date_added"));
                 break;
             case RATING:
-                sort = "rating";
+                params.add(new NameValuePair("sort_by", "rating"));
                 break;
-            case ALPHABET:
-                sort = "title";
-                break;
-            case TRENDING:
-                sort = "trending_score";
+            case POPULARITY:
                 break;
         }
-
-        params.add(new NameValuePair("sort_by", sort));
 
         if (filters.page != null) {
-            params.add(new NameValuePair("page", Integer.toString(filters.page)));
+            params.add(new NameValuePair("page", filters.page.toString()));
         }
 
-        Request.Builder requestBuilder = new Request.Builder();
         String query = "?" + buildQuery(params);
-        // query not used, but still here as example
-        requestBuilder.url(CURRENT_URL);
+
+        Request.Builder requestBuilder = new Request.Builder();
+        requestBuilder.url(CURRENT_URL + query);
         requestBuilder.tag(MEDIA_CALL);
 
         return fetchList(currentList, requestBuilder, filters, callback);
@@ -184,9 +166,11 @@ public class VodoProvider extends MediaProvider {
                         return;
                     }
 
-                    VodoResponse result;
-                    try {
-                        result = mGson.fromJson(responseStr, VodoResponse.class);
+                    List<MovieMagnet> result;
+                    try
+                    {
+                        Type listMagnet = new TypeToken<List<MovieMagnet>>() {}.getType();
+                        result = mGson.fromJson(responseStr, listMagnet);
                     } catch (IllegalStateException e) {
                         onFailure(response.request(), new IOException("JSON Failed"));
                         return;
@@ -197,15 +181,16 @@ public class VodoProvider extends MediaProvider {
 
                     if(result == null) {
                         callback.onFailure(new NetworkErrorException("No response"));
-                    } else if(result.downloads == null || result.downloads.size() <= 0) {
+                    } else if(result == null || result.size() <= 0) {
                         callback.onFailure(new NetworkErrorException("No movies found"));
                     } else {
-                        ArrayList<Media> formattedData = result.formatForApp(currentList);
+                        PelisMagnetResponse pelisMagmet = new PelisMagnetResponse(result);
+                        ArrayList<Media> formattedData = pelisMagmet.formatForApp(currentList);
                         callback.onSuccess(filters, formattedData, true);
                         return;
                     }
                 }
-                onFailure(response.request(), new IOException("Couldn't connect to Vodo"));
+                onFailure(response.request(), new IOException("Couldn't connect to PelisMagnet"));
             }
         });
     }
@@ -218,23 +203,13 @@ public class VodoProvider extends MediaProvider {
         return null;
     }
 
-    private class VodoResponse {
-        public ArrayList<LinkedTreeMap<String, Object>> downloads;
+    private class PelisMagnetResponse
+    {
+        public List<MovieMagnet> movies;
 
-        /**
-         * Test if there is an item that already exists
-         *
-         * @param results List with items
-         * @param id      Id of item to check for
-         * @return Return the index of the item in the results
-         */
-        private int isInResults(ArrayList<Media> results, String id) {
-            int i = 0;
-            for (Media item : results) {
-                if (item.videoId.equals(id)) return i;
-                i++;
-            }
-            return -1;
+        PelisMagnetResponse(List<MovieMagnet> movies)
+        {
+            this.movies = movies;
         }
 
         /**
@@ -244,65 +219,45 @@ public class VodoProvider extends MediaProvider {
          * @return List with items
          */
         public ArrayList<Media> formatForApp(ArrayList<Media> existingList) {
-            ArrayList<LinkedTreeMap<String, Object>> movies = new ArrayList<>();
-            if (downloads != null) {
-                movies = downloads;
-            }
 
-            for (LinkedTreeMap<String, Object> item : movies) {
-                Movie movie = new Movie(sMediaProvider, null);
-
-                movie.imdbId = (String) item.get("ImdbCode");
-                movie.videoId = movie.imdbId.substring(2);
-
-                int existingItem = isInResults(existingList, movie.videoId);
-                if (existingItem == -1) {
-                    movie.title = (String) item.get("MovieTitleClean");
-                    String yearStr = item.get("MovieYear").toString();
-                    Double year = Double.parseDouble(yearStr);
-                    movie.year = Integer.toString(year.intValue());
-                    movie.rating = item.get("MovieRating").toString();
-                    movie.genre = StringUtils.uppercaseFirst(item.get("Genre").toString().split(",")[0]);
-                    movie.image = (String) item.get("CoverImage");
-                    movie.headerImage = (String) item.get("CoverImage");
-                    movie.trailer = null;
-                    String runtimeStr = item.get("Runtime").toString();
-                    Double runtime = 0d;
-                    if(!runtimeStr.isEmpty())
-                        runtime = Double.parseDouble(runtimeStr);
-                    movie.runtime = Integer.toString(runtime.intValue());
-                    movie.synopsis = (String) item.get("Synopsis");
-                    movie.certification = null;
-                    movie.fullImage = movie.image;
-
-                    Media.Torrent torrent = new Media.Torrent();
-                    torrent.seeds = 0;
-                    torrent.peers = 0;
-                    torrent.hash = null;
-                    torrent.url = (String) item.get("TorrentUrl");
-                    movie.torrents.put(item.get("Quality").toString(), torrent);
-
+            for (MovieMagnet movieMagnet : movies) {
+                if (movieMagnet.isInResults(existingList) == false) {
+                    Movie movie = movieMagnet.getMovie(sMediaProvider);
                     existingList.add(movie);
                 }
             }
             return existingList;
         }
     }
+
     @Override
     public int getLoadingMessage() {
         return R.string.loading_movies;
     }
 
     @Override
-    public List<NavInfo> getNavigation() {
+    public List<NavInfo> getNavigation()
+    {
         List<NavInfo> tabs = new ArrayList<>();
-        tabs.add(new NavInfo(R.id.yts_filter_a_to_z,Filters.Sort.ALPHABET, Filters.Order.ASC, ButterApplication.getAppContext().getString(R.string.a_to_z),R.drawable.yts_filter_a_to_z));
+        tabs.add(new NavInfo(R.id.magnet_filter_release_date,Filters.Sort.DATE, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.release_date),R.drawable.magnet_filter_release_date));
+        tabs.add(new NavInfo(R.id.magnet_filter_top_rated,Filters.Sort.RATING, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.top_rated),R.drawable.magnet_filter_top_rated));
+        tabs.add(new NavInfo(R.id.magnet_filter_popular_now,Filters.Sort.POPULARITY, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.popular),R.drawable.magnet_filter_popular_now));
+        tabs.add(new NavInfo(R.id.magnet_filter_a_to_z,Filters.Sort.ALPHABET, Filters.Order.ASC, ButterApplication.getAppContext().getString(R.string.a_to_z),R.drawable.magnet_filter_a_to_z));
         return tabs;
     }
 
     @Override
     public List<Genre> getGenres() {
-        return null;
+        List<Genre> genres = new ArrayList<>();
+        genres.add(new Genre(GENRE_KEYS[0], R.string.genre_action));
+        genres.add(new Genre(GENRE_KEYS[1], R.string.genre_adventure));
+        genres.add(new Genre(GENRE_KEYS[2], R.string.genre_animation));
+        genres.add(new Genre(GENRE_KEYS[3], R.string.genre_sci_fi));
+        genres.add(new Genre(GENRE_KEYS[4], R.string.genre_comedy));
+        genres.add(new Genre(GENRE_KEYS[5], R.string.genre_crime));
+        genres.add(new Genre(GENRE_KEYS[6], R.string.genre_drama));
+        genres.add(new Genre(GENRE_KEYS[7], R.string.genre_horror));
+        genres.add(new Genre(GENRE_KEYS[8], R.string.genre_romance));
+        return genres;
     }
-
 }

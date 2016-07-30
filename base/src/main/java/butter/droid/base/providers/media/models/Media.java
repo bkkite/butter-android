@@ -154,6 +154,13 @@ public class Media implements Parcelable {
             this.hash = hash;
         }
 
+        public Torrent(String url, String seeds, String peers, String hash) {
+            this.url = url;
+            this.seeds = Integer.getInteger(seeds);
+            this.peers = Integer.getInteger(peers);
+            this.hash = hash;
+        }
+
         public Torrent(Parcel in) {
             url = in.readString();
             seeds = in.readInt();

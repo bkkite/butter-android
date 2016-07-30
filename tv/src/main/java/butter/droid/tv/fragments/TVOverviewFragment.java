@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butter.droid.base.providers.media.VodoProvider;
+import butter.droid.base.providers.media.MagnetProvider.PelisMagnetProvider;
 import hugo.weaving.DebugLog;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Media;
@@ -76,7 +76,7 @@ public class TVOverviewFragment extends BrowseFragment implements OnItemViewClic
     private ArrayObjectAdapter mShowAdapter;
     private ArrayObjectAdapter mMoviesAdapter;
 
-    private VodoProvider mMoviesProvider = new VodoProvider();
+    private PelisMagnetProvider mMoviesProvider = new PelisMagnetProvider();
     // private XProvider mShowsProvider = x
 
     private BackgroundUpdater mBackgroundUpdater;
@@ -359,7 +359,7 @@ public class TVOverviewFragment extends BrowseFragment implements OnItemViewClic
                             .setPositiveButton("Start", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    Movie media = new Movie(new VodoProvider(), new YSubsProvider());
+                                    Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
 
                                     media.videoId = "dialogtestvideo";
                                     media.title = "User input test video";
@@ -370,7 +370,7 @@ public class TVOverviewFragment extends BrowseFragment implements OnItemViewClic
                     builder.show();
                 }
 
-                final Movie media = new Movie(new VodoProvider(), new YSubsProvider());
+                final Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
                 media.videoId = "bigbucksbunny";
                 media.title = file_types[index];
                 media.subtitles = new HashMap<>();

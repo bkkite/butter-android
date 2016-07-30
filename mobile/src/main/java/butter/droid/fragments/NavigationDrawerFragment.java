@@ -41,8 +41,9 @@ import butter.droid.activities.PreferencesActivity;
 import butter.droid.adapters.NavigationAdapter;
 import butter.droid.adapters.decorators.OneShotDividerDecorator;
 import butter.droid.base.content.preferences.Prefs;
+import butter.droid.base.providers.media.MagnetProvider.PelisMagnetProvider;
+import butter.droid.base.providers.media.MagnetProvider.TvShowsMagnetProvider;
 import butter.droid.base.providers.media.MediaProvider;
-import butter.droid.base.providers.media.VodoProvider;
 import butter.droid.base.utils.PrefUtils;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationAdapter.Callback {
@@ -138,7 +139,8 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
         //todo: make list items dynamic
         List<NavDrawerItem> navItems = new ArrayList<>();
         navItems.add(new NavDrawerItem(true));
-        navItems.add(new NavDrawerItem(getString(R.string.title_movies), R.drawable.ic_nav_movies, new VodoProvider()));
+        navItems.add(new NavDrawerItem(getString(R.string.title_movies), R.drawable.ic_nav_movies, new PelisMagnetProvider()));
+        navItems.add(new NavDrawerItem(getString(R.string.title_shows), R.drawable.ic_nav_tv, new TvShowsMagnetProvider()));
         navItems.add(new NavDrawerItem(getString(R.string.preferences), R.drawable.ic_nav_settings, mOnSettingsClickListener));
 
         if(mAdapter != null)
