@@ -20,4 +20,10 @@
     <item name="haru_filter_popular" type="id" />
     <item name="haru_filter_a_to_z" type="id" />
 
+    <item name="magnet_filter_genres" type="id" />
+    <item name="magnet_filter_a_to_z" type="id" />
+    <item name="magnet_filter_release_date" type="id" />
+    <item name="magnet_filter_top_rated" type="id" />
+    <item name="magnet_filter_popular_now" type="id" />
+
 </resources>
