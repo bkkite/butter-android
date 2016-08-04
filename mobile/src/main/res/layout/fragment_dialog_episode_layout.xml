@@ -146,6 +146,22 @@
                             android:scaleType="fitCenter"
                             android:contentDescription="@string/magnet" />
 
+                        <butter.droid.widget.SquareImageView
+                            android:layout_width="12dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@id/magnet"
+                            android:layout_alignBottom="@id/magnet"
+                            android:layout_toEndOf="@id/magnet"
+                            android:layout_toRightOf="@id/magnet"
+                            android:layout_marginLeft="6dp"
+                            android:layout_marginStart="6dp"
+                            android:maxWidth="20dp"
+                            android:id="@+id/downloaded"
+                            android:src="@drawable/ic_source_online_media"
+                            android:scaleType="centerInside"
+                            android:visibility="gone"
+                            tools:visibility="visible" />
+
                         <com.devspark.robototextview.widget.RobotoTextView
                             android:id="@+id/synopsis"
                             android:layout_width="wrap_content"

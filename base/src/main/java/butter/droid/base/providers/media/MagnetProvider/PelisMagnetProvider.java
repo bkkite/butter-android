@@ -220,9 +220,11 @@ public class PelisMagnetProvider extends MediaProvider {
          */
         public ArrayList<Media> formatForApp(ArrayList<Media> existingList) {
 
+            Context context = ButterApplication.getAppContext();
+
             for (MovieMagnet movieMagnet : movies) {
                 if (movieMagnet.isInResults(existingList) == false) {
-                    Movie movie = movieMagnet.getMovie(sMediaProvider);
+                    Movie movie = movieMagnet.getMovie(context, sMediaProvider);
                     existingList.add(movie);
                 }
             }

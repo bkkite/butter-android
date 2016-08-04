@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class ShowDetailAboutFragment extends BaseDetailFragment {
     LinearLayout mInfoButtons;
     @Bind(R.id.magnet)
     ImageButton mOpenMagnet;
+    @Bind(R.id.downloaded)
+    ImageView mDowloaded;
 
     public static ShowDetailAboutFragment newInstance(Show show) {
         Bundle b = new Bundle();
@@ -120,6 +123,7 @@ public class ShowDetailAboutFragment extends BaseDetailFragment {
         }
 
         mOpenMagnet.setVisibility(View.GONE);
+        mDowloaded.setVisibility(View.GONE);
 
         return mRoot;
     }

@@ -66,18 +66,6 @@
                 android:max="10"
                 android:progress="5"/>
 
-            <butter.droid.widget.SquareImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
-                android:layout_marginLeft="6dp"
-                android:layout_marginStart="6dp"
-                android:maxWidth="20dp"
-                android:id="@+id/health"
-                android:src="@drawable/ic_health_unknown"
-                android:scaleType="centerInside"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
             <ImageButton
                 android:layout_width="15dp"
                 android:layout_height="16dp"
@@ -90,6 +78,18 @@
                 tools:visibility="visible"
                 android:scaleType="fitCenter"
                 android:contentDescription="@string/magnet" />
+
+            <butter.droid.widget.SquareImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginLeft="6dp"
+                android:layout_marginStart="6dp"
+                android:maxWidth="20dp"
+                android:id="@+id/downloaded"
+                android:src="@drawable/ic_source_online_media"
+                android:scaleType="centerInside"
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
 
@@ -126,8 +126,8 @@
         android:layout_width="match_parent"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/detail_vertical_offset"
-        >
+        android:paddingBottom="@dimen/detail_vertical_offset">
+
         <com.devspark.robototextview.widget.RobotoButton
             style="@style/Theme.Butter.DetailButton"
             android:id="@+id/read_more"

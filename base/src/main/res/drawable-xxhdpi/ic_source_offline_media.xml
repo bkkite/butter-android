@@ -16,13 +16,7 @@
   ~ along with Butter. If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources>
-    <color name="bad_health">#D40E00</color>
-    <color name="medium_health">#D47800</color>
-    <color name="good_health">#C9D400</color>
-    <color name="excellent_health">#5ABA00</color>
-    <color name="unknown_health">#696969</color>
-
-    <color name="source_offline_media">#5ABA00</color>
-    <color name="source_online_media">#D40E00</color>
-</resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <solid android:color="@color/source_offline_media" />
+    <size android:height="12dp" android:width="12dp" />
+</shape>

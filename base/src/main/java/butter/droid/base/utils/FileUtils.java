@@ -17,6 +17,8 @@
 
 package butter.droid.base.utils;
 
+import android.content.Context;
+
 import org.mozilla.universalchardet.Constants;
 import org.mozilla.universalchardet.UniversalDetector;
 
@@ -25,6 +27,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +44,7 @@ import java.nio.charset.CharsetDecoder;
 import java.util.HashMap;
 
 import butter.droid.base.content.UnicodeBOMInputStream;
+import butter.droid.base.content.preferences.Prefs;
 
 public class FileUtils {
 
@@ -280,5 +284,35 @@ public class FileUtils {
         }
 
         return "UTF-8";
+    }
+
+    private static File prvDownloadedPathFile(Context context, String hash)
+    {
+        String dowload_location = PrefUtils.get(context, Prefs.DOWNLOAD_STORAGE_LOCATION, StorageUtils.getIdealCacheDirectory(context).toString());
+        String folder = "/magnet (" + hash + ")/";
+
+        return new File(dowload_location + folder);
+    }
+
+    public static boolean getMagnetIsDownloaded(Context context, String hash)
+    {
+        if (PrefUtils.get(context, Prefs.DOWNLOAD_CACHE, true))
+        {
+            File path = prvDownloadedPathFile(context, hash);
+            return path.exists();
+        }
+        else
+            return false;
+    }
+
+    public static String getMagnetDownloadedPathVideoFile(Context context, String hash)
+    {
+        if (PrefUtils.get(context, Prefs.DOWNLOAD_CACHE, true))
+        {
+            File path = prvDownloadedPathFile(context, hash);
+            return path.toString();
+        }
+        else
+            return "";
     }
 }

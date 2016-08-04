@@ -64,16 +64,6 @@
                         style="@style/Theme.Butter.RatingBar"
                         android:max="10"
                         android:progress="5"/>
-                    <butter.droid.widget.SquareImageView
-                        android:layout_width="12dp"
-                        android:layout_height="12dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginStart="8dp"
-                        android:id="@+id/health"
-                        android:src="@drawable/ic_health_unknown"
-                        android:scaleType="centerInside"
-                        android:visibility="gone"
-                        tools:visibility="visible" />
                     <ImageButton
                         android:layout_width="15dp"
                         android:layout_height="match_parent"
@@ -86,6 +76,16 @@
                         tools:visibility="visible"
                         android:scaleType="fitCenter"
                         android:contentDescription="@string/magnet" />
+                    <butter.droid.widget.SquareImageView
+                        android:layout_width="12dp"
+                        android:layout_height="12dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginStart="8dp"
+                        android:id="@+id/downloaded"
+                        android:src="@drawable/ic_source_online_media"
+                        android:scaleType="centerInside"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
                 </LinearLayout>
 
                 <com.devspark.robototextview.widget.RobotoTextView

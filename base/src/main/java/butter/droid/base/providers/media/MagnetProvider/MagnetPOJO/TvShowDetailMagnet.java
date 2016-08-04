@@ -1,5 +1,7 @@
 package butter.droid.base.providers.media.MagnetProvider.MagnetPOJO;
 
+import android.content.Context;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -12,6 +14,7 @@ import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Episode;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Show;
+import butter.droid.base.utils.FileUtils;
 
 public class TvShowDetailMagnet {
 
@@ -66,7 +69,7 @@ public class TvShowDetailMagnet {
         return false;
     }
 
-    public Show getShow(MediaProvider mediaProvider)
+    public Show getShow(Context context, MediaProvider mediaProvider)
     {
         Show show = new Show(mediaProvider, null);
 
@@ -115,6 +118,7 @@ public class TvShowDetailMagnet {
                     torrent.url = capitulo.links.magnet;
                     torrent.hash = capitulo.links.hash;
                     torrent.seeds = torrent.peers = 0;
+                    torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
                     episodeObject.torrents.put(capitulo.links.calitat, torrent);
                 }
 

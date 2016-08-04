@@ -45,6 +45,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
+import butter.droid.activities.VideoPlayerActivity;
+import butter.droid.base.content.preferences.DefaultPlayer;
+import butter.droid.base.utils.FileUtils;
 import butterknife.ButterKnife;
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -110,6 +113,9 @@ public class EpisodeDialogFragment extends DialogFragment {
     @Bind(R.id.magnet)
     @Nullable
     ImageButton mOpenMagnet;
+    @Bind(R.id.downloaded)
+    @Nullable
+    ImageView mDownloaded;
 
     public static EpisodeDialogFragment newInstance(Show show, Episode episode) {
         EpisodeDialogFragment frag = new EpisodeDialogFragment();
@@ -261,12 +267,14 @@ public class EpisodeDialogFragment extends DialogFragment {
         mQuality.setText(mSelectedQuality);
         mQuality.setDefault(qualityIndex);
 
+        renderDownloaded();
         updateMagnet();
 
         mQuality.setListener(new OptionSelector.SelectorListener() {
             @Override
             public void onSelectionChanged(int position, String value) {
                 mSelectedQuality = value;
+                renderDownloaded();
                 updateMagnet();
             }
         });
@@ -379,6 +387,18 @@ public class EpisodeDialogFragment extends DialogFragment {
         super.onAttach(activity);
     }
 
+    private void renderDownloaded()
+    {
+        if (mDownloaded.getVisibility() == View.GONE){
+            mDownloaded.setVisibility(View.VISIBLE);
+        }
+
+        if (mEpisode.torrents.get(mSelectedQuality).isDownloaded)
+            mDownloaded.setImageResource(R.drawable.ic_source_offline_media);
+        else
+            mDownloaded.setImageResource(R.drawable.ic_source_online_media);
+    }
+
     private void updateMagnet() {
         if (mOpenMagnet == null) return;
 
@@ -408,9 +428,17 @@ public class EpisodeDialogFragment extends DialogFragment {
     @OnClick(R.id.play_button)
     public void playClick() {
         smoothDismiss();
-        Media.Torrent torrent = mEpisode.torrents.get(mSelectedQuality);
-        StreamInfo streamInfo = new StreamInfo(mEpisode, mShow, torrent.url, mSelectedSubtitleLanguage, mSelectedQuality);
-        ((MediaDetailActivity) getActivity()).playStream(streamInfo);
+        if (mEpisode.torrents.get(mSelectedQuality).isDownloaded == true)
+        {
+            String path_video = FileUtils.getMagnetDownloadedPathVideoFile(mActivity, mEpisode.torrents.get(mSelectedQuality).hash);
+            DefaultPlayer.startOffLine(mEpisode, path_video);
+        }
+        else
+        {
+            Media.Torrent torrent = mEpisode.torrents.get(mSelectedQuality);
+            StreamInfo streamInfo = new StreamInfo(mEpisode, mShow, torrent.url, mSelectedSubtitleLanguage, mSelectedQuality);
+            ((MediaDetailActivity) getActivity()).playStream(streamInfo);
+        }
     }
 
     @Nullable

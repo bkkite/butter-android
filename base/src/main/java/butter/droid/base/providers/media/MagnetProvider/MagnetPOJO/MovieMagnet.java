@@ -1,17 +1,19 @@
 package butter.droid.base.providers.media.MagnetProvider.MagnetPOJO;
 
+import android.content.Context;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Movie;
-import butter.droid.base.providers.subs.SubsProvider;
-import butter.droid.base.torrent.Magnet;
+import butter.droid.base.utils.FileUtils;
 
 public class MovieMagnet {
 
@@ -72,7 +74,7 @@ public class MovieMagnet {
         return false;
     }
 
-    public Movie getMovie(MediaProvider mediaProvider)
+    public Movie getMovie(Context context, MediaProvider mediaProvider)
     {
         Movie movie = new Movie(mediaProvider, null);
 
@@ -101,6 +103,7 @@ public class MovieMagnet {
             torrent.peers = this.magnets.m1080.peers;
             torrent.seeds = this.magnets.m1080.peers;
             torrent.hash = this.magnets.m1080.hash;
+            torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
 
             movie.torrents.put(this.magnets.m1080.quality, torrent);
         }
@@ -112,6 +115,7 @@ public class MovieMagnet {
             torrent.peers = this.magnets.m720.peers;
             torrent.seeds = this.magnets.m720.peers;
             torrent.hash = this.magnets.m720.hash;
+            torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
 
             movie.torrents.put(this.magnets.m720.quality, torrent);
         }
@@ -123,6 +127,7 @@ public class MovieMagnet {
             torrent.peers = this.magnets.m3D.peers;
             torrent.seeds = this.magnets.m3D.peers;
             torrent.hash = this.magnets.m3D.hash;
+            torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
 
             movie.torrents.put(this.magnets.m3D.quality, torrent);
         }

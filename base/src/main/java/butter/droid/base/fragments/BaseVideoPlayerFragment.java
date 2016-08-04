@@ -277,6 +277,8 @@ public abstract class BaseVideoPlayerFragment
      */
     @SuppressWarnings({"unchecked"})
     protected void loadMedia() {
+        org.videolan.libvlc.Media media;
+        boolean startFromPath = false;
         StreamInfo streamInfo = mCallback.getInfo();
 
         String videoLocation;
@@ -288,16 +290,21 @@ public abstract class BaseVideoPlayerFragment
         else {
             videoLocation = streamInfo.getVideoLocation();
             if (!videoLocation.startsWith("file://") && !videoLocation.startsWith("http://") && !videoLocation.startsWith("https://")) {
-                videoLocation = "file://" + videoLocation;
+                startFromPath = true;
             }
         }
 
         int flags = mDisabledHardwareAcceleration ? VLCOptions.MEDIA_NO_HWACCEL : 0;
         flags = flags | VLCOptions.MEDIA_VIDEO;
 
-        org.videolan.libvlc.Media media = new org.videolan.libvlc.Media(mLibVLC, Uri.parse(videoLocation));
-        VLCOptions.setMediaOptions(media, getActivity(), flags);
+        if (startFromPath) {
+            media = new org.videolan.libvlc.Media(mLibVLC, videoLocation);
+        }
+        else {
+            media = new org.videolan.libvlc.Media(mLibVLC, Uri.parse(videoLocation));
+        }
 
+        VLCOptions.setMediaOptions(media, getActivity(), flags);
         mMediaPlayer.setMedia(media);
 
         long resumeFrom = PrefUtils.get(getActivity(), RESUME_POSITION, mResumePosition);

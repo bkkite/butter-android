@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -23,19 +22,17 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import butter.droid.R;
 import butter.droid.activities.TrailerPlayerActivity;
 import butter.droid.activities.VideoPlayerActivity;
+import butter.droid.base.content.preferences.DefaultPlayer;
 import butter.droid.base.content.preferences.DefaultQuality;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.providers.subs.SubsProvider;
 import butter.droid.base.torrent.Magnet;
 import butter.droid.base.torrent.StreamInfo;
-import butter.droid.base.torrent.TorrentHealth;
+import butter.droid.base.utils.FileUtils;
 import butter.droid.base.utils.LocaleUtils;
 import butter.droid.base.utils.PixelUtils;
 import butter.droid.base.utils.PrefUtils;
@@ -44,9 +41,12 @@ import butter.droid.base.utils.StringUtils;
 import butter.droid.base.utils.ThreadUtils;
 import butter.droid.base.utils.VersionUtils;
 import butter.droid.base.youtube.YouTubeData;
-import butter.droid.fragments.dialog.SynopsisDialogFragment;
 import butter.droid.fragments.base.BaseDetailFragment;
+import butter.droid.fragments.dialog.SynopsisDialogFragment;
 import butter.droid.widget.OptionSelector;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MovieDetailFragment extends BaseDetailFragment {
 
@@ -59,8 +59,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
     ImageButton mPlayButton;
     @Bind(R.id.title)
     TextView mTitle;
-    @Bind(R.id.health)
-    ImageView mHealth;
+    @Bind(R.id.downloaded)
+    ImageView mDownloaded;
     @Bind(R.id.meta)
     TextView mMeta;
     @Bind(R.id.synopsis)
@@ -243,7 +243,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSelectionChanged(int position, String value) {
                         mSelectedQuality = value;
-                        renderHealth();
+                        renderDownloaded();
                         updateMagnet();
                     }
                 });
@@ -254,7 +254,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 mQuality.setText(mSelectedQuality);
                 mQuality.setDefault(qualityIndex);
 
-                renderHealth();
+                renderDownloaded();
                 updateMagnet();
             }
 
@@ -280,13 +280,16 @@ public class MovieDetailFragment extends BaseDetailFragment {
         mAttached = false;
     }
 
-    private void renderHealth() {
-        if(mHealth.getVisibility() == View.GONE) {
-            mHealth.setVisibility(View.VISIBLE);
+    private void renderDownloaded()
+    {
+        if (mDownloaded.getVisibility() == View.GONE){
+            mDownloaded.setVisibility(View.VISIBLE);
         }
 
-        TorrentHealth health = TorrentHealth.calculate(sMovie.torrents.get(mSelectedQuality).seeds, sMovie.torrents.get(mSelectedQuality).peers);
-        mHealth.setImageResource(health.getImageResource());
+        if (sMovie.torrents.get(mSelectedQuality).isDownloaded)
+            mDownloaded.setImageResource(R.drawable.ic_source_offline_media);
+        else
+            mDownloaded.setImageResource(R.drawable.ic_source_online_media);
     }
 
     private void updateMagnet() {
@@ -324,30 +327,22 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
     @OnClick(R.id.play_button)
     public void play() {
-        String streamUrl = sMovie.torrents.get(mSelectedQuality).url;
-        StreamInfo streamInfo = new StreamInfo(sMovie, streamUrl, mSelectedSubtitleLanguage, mSelectedQuality);
-        mCallback.playStream(streamInfo);
+        if (sMovie.torrents.get(mSelectedQuality).isDownloaded == true)
+        {
+            String path_video = FileUtils.getMagnetDownloadedPathVideoFile(mActivity, sMovie.torrents.get(mSelectedQuality).hash);
+            DefaultPlayer.startOffLine(sMovie, path_video);
+        }
+        else
+        {
+            String streamUrl = sMovie.torrents.get(mSelectedQuality).url;
+            StreamInfo streamInfo = new StreamInfo(sMovie, streamUrl, mSelectedSubtitleLanguage, mSelectedQuality);
+            mCallback.playStream(streamInfo);
+        }
     }
 
     @OnClick(R.id.magnet)
     public void openMagnet() {
         mMagnet.open(mActivity);
-    }
-
-    @OnClick(R.id.health)
-    public void clickHealth() {
-        int seeds = sMovie.torrents.get(mSelectedQuality).seeds;
-        int peers = sMovie.torrents.get(mSelectedQuality).peers;
-        TorrentHealth health = TorrentHealth.calculate(seeds, peers);
-
-        final Snackbar snackbar = Snackbar.make(mRoot, getString(R.string.health_info, getString(health.getStringResource()), seeds, peers), Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.close, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
-        snackbar.show();
     }
 
     private void onSubtitleLanguageSelected(String language) {

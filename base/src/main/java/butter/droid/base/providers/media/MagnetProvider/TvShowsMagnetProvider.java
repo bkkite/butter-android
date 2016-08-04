@@ -286,8 +286,9 @@ public class TvShowsMagnetProvider extends MediaProvider {
          * @return List with items
          */
         public ArrayList<Media> formatForApp() {
+            Context context = ButterApplication.getAppContext();
             ArrayList<Media> list = new ArrayList<Media>();
-            Show show = details.getShow(sMediaProvider);
+            Show show = details.getShow(context, sMediaProvider);
             list.add(show);
             return list;
         }

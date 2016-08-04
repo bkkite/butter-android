@@ -128,4 +128,26 @@ public class DefaultPlayer {
         return false;
     }
 
+    public static void startOffLine(Media media, String path_video) {
+        Context context = ButterApplication.getAppContext();
+        String[] playerData = PrefUtils.get(context, Prefs.DEFAULT_PLAYER, "").split(DELIMITER);
+        if (playerData.length > 1) {
+            Intent intent = new Intent();
+            intent.setClassName(playerData[1], playerData[0]);
+            intent.setAction(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.parse(path_video), "video/*");
+
+            if(media != null) {
+                if(media.isMovie) {
+                    intent.putExtra("title", media.title);
+                } else {
+                    Episode episode = (Episode) media;
+                    intent.putExtra("title", String.format("%s S%dE%d - %s", episode.showName, episode.season, episode.episode, episode.title));
+                }
+            }
+
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
 }
