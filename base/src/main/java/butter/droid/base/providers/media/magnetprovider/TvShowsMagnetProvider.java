@@ -15,7 +15,7 @@
  * along with Butter. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package butter.droid.base.providers.media.MagnetProvider;
+package butter.droid.base.providers.media.magnetprovider;
 
 import android.accounts.NetworkErrorException;
 import android.content.Context;
@@ -37,13 +37,11 @@ import java.util.List;
 
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
-import butter.droid.base.providers.media.MagnetProvider.MagnetPOJO.MovieMagnet;
-import butter.droid.base.providers.media.MagnetProvider.MagnetPOJO.TvShowDetailMagnet;
-import butter.droid.base.providers.media.MagnetProvider.MagnetPOJO.TvShowMagnet;
+import butter.droid.base.providers.media.magnetprovider.pojo.TvShowDetailMagnet;
+import butter.droid.base.providers.media.magnetprovider.pojo.TvShowMagnet;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Genre;
 import butter.droid.base.providers.media.models.Media;
-import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.providers.media.models.Show;
 import butter.droid.base.utils.LocaleUtils;
 
@@ -59,8 +57,6 @@ public class TvShowsMagnetProvider extends MediaProvider {
     public static String CURRENT_URL = API_URLS[CURRENT_API];
 
     private static Filters sFilters = new Filters();
-
-    private static final String [] GENRE_KEYS = {"Acción", "Aventura", "Animación", "Ciencia Ficción", "Comedia", "Crimen", "Drama", "Terror", "Romance"};
 
     @Override
     protected Call enqueue(Request request, com.squareup.okhttp.Callback requestCallback) {
@@ -98,10 +94,6 @@ public class TvShowsMagnetProvider extends MediaProvider {
             params.add(new NameValuePair("keywords", filters.keywords));
         }
 
-        if (filters.genre != null) {
-            params.add(new NameValuePair("genre", filters.genre));
-        }
-
         switch (filters.sort)
         {
             default:
@@ -132,7 +124,7 @@ public class TvShowsMagnetProvider extends MediaProvider {
     }
 
     /**
-     * Fetch the list of movies from YTS
+     * Fetch the list of movies from MagnetProvider
      *
      * @param currentList    Current shown list to be extended
      * @param requestBuilder Request to be executed
@@ -312,16 +304,6 @@ public class TvShowsMagnetProvider extends MediaProvider {
 
     @Override
     public List<Genre> getGenres() {
-        List<Genre> genres = new ArrayList<>();
-        genres.add(new Genre(GENRE_KEYS[0], R.string.genre_action));
-        genres.add(new Genre(GENRE_KEYS[1], R.string.genre_adventure));
-        genres.add(new Genre(GENRE_KEYS[2], R.string.genre_animation));
-        genres.add(new Genre(GENRE_KEYS[3], R.string.genre_sci_fi));
-        genres.add(new Genre(GENRE_KEYS[4], R.string.genre_comedy));
-        genres.add(new Genre(GENRE_KEYS[5], R.string.genre_crime));
-        genres.add(new Genre(GENRE_KEYS[6], R.string.genre_drama));
-        genres.add(new Genre(GENRE_KEYS[7], R.string.genre_horror));
-        genres.add(new Genre(GENRE_KEYS[8], R.string.genre_romance));
-        return genres;
+        return new ArrayList<>();
     }
 }

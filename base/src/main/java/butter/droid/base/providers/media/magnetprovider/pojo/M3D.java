@@ -1,16 +1,19 @@
-package butter.droid.base.providers.media.MagnetProvider.MagnetPOJO;
+package butter.droid.base.providers.media.magnetprovider.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Links {
+public class M3D {
 
     @SerializedName("magnet")
     @Expose
     public String magnet;
-    @SerializedName("calitat")
+    @SerializedName("quality")
     @Expose
-    public String calitat;
+    public String quality;
+    @SerializedName("peers")
+    @Expose
+    public Integer peers;
     @SerializedName("hash")
     @Expose
     public String hash;

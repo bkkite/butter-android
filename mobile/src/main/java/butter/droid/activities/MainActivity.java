@@ -48,7 +48,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.HashMap;
 
-import butter.droid.base.providers.media.MagnetProvider.PelisMagnetProvider;
+import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
 import butterknife.Bind;
 import android.support.annotation.Nullable;
 import butter.droid.BuildConfig;

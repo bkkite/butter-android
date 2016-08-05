@@ -290,4 +290,7 @@
   <string name="episode_number_format">Episodio %d</string>
   <!--PTVSettingsFragment-->
   <string name="version_pref">Versión</string>
+  <string name="download_cache">Activar directorio para reproducir contenido offline</string>
+  <string name="download_location">Directorio de descarga</string>
+  <string name="downloaded">Descargado</string>
 </resources>

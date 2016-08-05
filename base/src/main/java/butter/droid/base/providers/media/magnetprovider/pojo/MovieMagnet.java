@@ -1,4 +1,4 @@
-package butter.droid.base.providers.media.MagnetProvider.MagnetPOJO;
+package butter.droid.base.providers.media.magnetprovider.pojo;
 
 import android.content.Context;
 
@@ -71,6 +71,35 @@ public class MovieMagnet {
         for (Media item : results) {
             if (item.videoId.equals(id)) return true;
         }
+        return false;
+    }
+
+    public boolean isDownloaded(Context context)
+    {
+        if (this.magnets.m1080.magnet != null){
+            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m1080.hash) == true)
+                return true;
+        }
+
+        if (this.magnets.m720.magnet != null){
+            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m720.hash) == true)
+                return true;
+        }
+
+        if (this.magnets.m3D.magnet != null){
+            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m3D.hash) == true)
+                return true;
+        }
+
+        return false;
+    }
+
+    public boolean isHDMovie()
+    {
+        if (this.magnets.m1080.magnet != null){
+                return true;
+        }
+
         return false;
     }
 

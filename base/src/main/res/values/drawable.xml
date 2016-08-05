@@ -29,4 +29,6 @@
     <drawable  name="magnet_filter_hd_release_date">@android:color/transparent</drawable>
     <drawable  name="magnet_filter_top_rated">@android:color/transparent</drawable>
     <drawable  name="magnet_filter_popular_now">@android:color/transparent</drawable>
+    <drawable  name="magnet_filter_downloaded">@android:color/transparent</drawable>
+    <drawable  name="magnet_filter_hd">@android:color/transparent</drawable>
 </resources>

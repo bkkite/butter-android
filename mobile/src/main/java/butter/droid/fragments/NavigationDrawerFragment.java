@@ -41,8 +41,8 @@ import butter.droid.activities.PreferencesActivity;
 import butter.droid.adapters.NavigationAdapter;
 import butter.droid.adapters.decorators.OneShotDividerDecorator;
 import butter.droid.base.content.preferences.Prefs;
-import butter.droid.base.providers.media.MagnetProvider.PelisMagnetProvider;
-import butter.droid.base.providers.media.MagnetProvider.TvShowsMagnetProvider;
+import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
+import butter.droid.base.providers.media.magnetprovider.TvShowsMagnetProvider;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.utils.PrefUtils;
 

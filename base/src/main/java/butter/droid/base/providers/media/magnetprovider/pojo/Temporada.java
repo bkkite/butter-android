@@ -1,4 +1,4 @@
-package butter.droid.base.providers.media.MagnetProvider.MagnetPOJO;
+package butter.droid.base.providers.media.magnetprovider.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

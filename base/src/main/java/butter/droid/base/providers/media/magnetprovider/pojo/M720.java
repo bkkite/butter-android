@@ -1,9 +1,9 @@
-package butter.droid.base.providers.media.MagnetProvider.MagnetPOJO;
+package butter.droid.base.providers.media.magnetprovider.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class M1080 {
+public class M720 {
 
     @SerializedName("magnet")
     @Expose
