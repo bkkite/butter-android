@@ -20,7 +20,9 @@ package butter.droid.base.providers.media.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butter.droid.base.providers.media.MediaProvider;
@@ -32,7 +34,7 @@ public class Movie extends Media implements Parcelable {
     public String runtime = "";
     public String synopsis = "No synopsis available";
     public String certification = "n/a";
-    public Map<String, Torrent> torrents = new HashMap<String, Torrent>();
+    public Map<String, Torrent> torrents = new HashMap<>();
 
     public Movie(MediaProvider mediaProvider, SubsProvider subsProvider) {
         super(mediaProvider, subsProvider);
@@ -51,6 +53,18 @@ public class Movie extends Media implements Parcelable {
             Torrent torrent = in.readParcelable(Torrent.class.getClassLoader());
             torrents.put(key, torrent);
         }
+    }
+
+    public boolean isDownloaded() {
+
+        Collection<Torrent> torrents = this.torrents.values();
+
+        for(Torrent torrent: torrents){
+            if (torrent.isDownloaded)
+                return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -88,5 +102,4 @@ public class Movie extends Media implements Parcelable {
             return new Movie[size];
         }
     };
-
 }

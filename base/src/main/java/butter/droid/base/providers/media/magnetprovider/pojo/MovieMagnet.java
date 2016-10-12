@@ -69,7 +69,7 @@ public class MovieMagnet {
     public boolean isInResults(ArrayList<Media> results)
     {
         for (Media item : results) {
-            if (item.videoId.equals(id)) return true;
+            if (item.videoId.equals(id.toString())) return true;
         }
         return false;
     }
@@ -77,17 +77,17 @@ public class MovieMagnet {
     public boolean isDownloaded(Context context)
     {
         if (this.magnets.m1080.magnet != null){
-            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m1080.hash) == true)
+            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m1080.hash))
                 return true;
         }
 
         if (this.magnets.m720.magnet != null){
-            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m720.hash) == true)
+            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m720.hash))
                 return true;
         }
 
         if (this.magnets.m3D.magnet != null){
-            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m3D.hash) == true)
+            if (FileUtils.getMagnetIsDownloaded(context, this.magnets.m3D.hash))
                 return true;
         }
 
@@ -121,7 +121,7 @@ public class MovieMagnet {
             movie.runtime = DateFormat.getTimeInstance(DateFormat.MEDIUM).format(da);
         }
         movie.synopsis = this.info;
-        movie.fullImage = "image.tmdb.org/t/p/w1280" + this.backurl;
+        movie.fullImage = "http://image.tmdb.org/t/p/w1280" + this.backurl;
 
         movie.torrents.clear();
 

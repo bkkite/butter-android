@@ -9,7 +9,6 @@
     <item name="yts_filter_popular_now" type="id" />
     <item name="yts_filter_trending" type="id" />
 
-
     <item name="eztv_filter_trending" type="id" />
     <item name="eztv_filter_popular_now" type="id" />
     <item name="eztv_filter_top_rated" type="id" />
@@ -26,5 +25,9 @@
     <item name="magnet_filter_hd_release_date" type="id" />
     <item name="magnet_filter_top_rated" type="id" />
     <item name="magnet_filter_popular_now" type="id" />
+
+    <item name="downloaded_filter_all" type="id" />
+    <item name="downloaded_filter_watched" type="id" />
+    <item name="downloaded_filter_not_watched" type="id" />
 
 </resources>

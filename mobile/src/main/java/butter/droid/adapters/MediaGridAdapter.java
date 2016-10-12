@@ -33,27 +33,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import hugo.weaving.DebugLog;
 import butter.droid.R;
 import butter.droid.base.providers.media.models.Media;
-import butter.droid.base.utils.AnimUtils;
+import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.utils.LocaleUtils;
 import butter.droid.base.utils.PixelUtils;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import hugo.weaving.DebugLog;
 
 
 public class MediaGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private int mItemWidth, mItemHeight, mMargin, mColumns;
     private ArrayList<OverviewItem> mItems = new ArrayList<>();
-    //	private ArrayList<Media> mData = new ArrayList<>();
+
     private MediaGridAdapter.OnItemClickListener mItemClickListener;
     final int NORMAL = 0, LOADING = 1;
 
@@ -113,6 +112,14 @@ public class MediaGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                         .resize(mItemWidth, mItemHeight)
                         .transform(DrawGradient.INSTANCE)
                         .into(videoViewHolder.coverImage);
+            }
+
+            if (item.isMovie) {
+                Movie movie = (Movie)item;
+                if (movie.isDownloaded())
+                    videoViewHolder.downloadedImage.setVisibility(View.VISIBLE);
+                else
+                    videoViewHolder.downloadedImage.setVisibility(View.GONE);
             }
         }
     }
@@ -197,6 +204,8 @@ public class MediaGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         View focusOverlay;
         @Bind(R.id.cover_image)
         ImageView coverImage;
+        @Bind(R.id.downloaded_image)
+        ImageView downloadedImage;
         @Bind(R.id.title)
         TextView title;
         @Bind(R.id.year)
@@ -215,6 +224,7 @@ public class MediaGridAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.itemView = itemView;
             itemView.setOnClickListener(this);
             coverImage.setMinimumHeight(mItemHeight);
+            downloadedImage.setVisibility(View.GONE);
 
             itemView.setOnFocusChangeListener(mOnFocusChangeListener);
         }

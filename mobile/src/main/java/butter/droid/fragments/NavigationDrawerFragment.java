@@ -41,6 +41,7 @@ import butter.droid.activities.PreferencesActivity;
 import butter.droid.adapters.NavigationAdapter;
 import butter.droid.adapters.decorators.OneShotDividerDecorator;
 import butter.droid.base.content.preferences.Prefs;
+import butter.droid.base.providers.media.DownloadProvider;
 import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
 import butter.droid.base.providers.media.magnetprovider.TvShowsMagnetProvider;
 import butter.droid.base.providers.media.MediaProvider;
@@ -141,6 +142,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
         navItems.add(new NavDrawerItem(true));
         navItems.add(new NavDrawerItem(getString(R.string.title_movies), R.drawable.ic_nav_movies, new PelisMagnetProvider()));
         navItems.add(new NavDrawerItem(getString(R.string.title_shows), R.drawable.ic_nav_tv, new TvShowsMagnetProvider()));
+        navItems.add(new NavDrawerItem(getString(R.string.title_downloaded), R.drawable.ic_nav_downloaded, new DownloadProvider()));
         navItems.add(new NavDrawerItem(getString(R.string.preferences), R.drawable.ic_nav_settings, mOnSettingsClickListener));
 
         if(mAdapter != null)

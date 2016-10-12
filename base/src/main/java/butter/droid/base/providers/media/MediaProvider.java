@@ -21,6 +21,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.squareup.okhttp.Call;
 
@@ -66,7 +69,7 @@ public abstract class MediaProvider extends BaseProvider implements Parcelable {
     public abstract List<NavInfo> getNavigation();
 
     public int getDefaultNavigationIndex() {
-        return 1;
+        return 0;
     }
 
     public List<Genre> getGenres() {
@@ -81,7 +84,7 @@ public abstract class MediaProvider extends BaseProvider implements Parcelable {
 
     public static class Filters {
         public enum Order {ASC, DESC};
-        public enum Sort {POPULARITY, YEAR, DATE, RATING, ALPHABET, TRENDING, DOWNLOADED, HD}
+        public enum Sort {POPULARITY, YEAR, DATE, RATING, ALPHABET, TRENDING, HD, WATCHED, NOT_WATCHED}
 
         public String keywords = null;
         public String genre = null;
@@ -89,7 +92,6 @@ public abstract class MediaProvider extends BaseProvider implements Parcelable {
         public Sort sort = Sort.POPULARITY;
         public Integer page = null;
         public String langCode = "en";
-        public boolean onlyDownloaded = false;
         public boolean onlyHD = false;
 
         public Filters() { }
@@ -101,7 +103,6 @@ public abstract class MediaProvider extends BaseProvider implements Parcelable {
             sort = filters.sort;
             page = filters.page;
             langCode = filters.langCode;
-            onlyDownloaded = filters.onlyDownloaded;
             onlyHD = filters.onlyHD;
         }
     }

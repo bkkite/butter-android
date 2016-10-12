@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import butterknife.Bind;
 import butter.droid.R;
 import butter.droid.activities.base.ButterBaseActivity;
 import butter.droid.base.beaming.BeamPlayerNotificationService;
@@ -36,12 +35,13 @@ import butter.droid.base.utils.NetworkUtils;
 import butter.droid.base.utils.PixelUtils;
 import butter.droid.base.utils.PrefUtils;
 import butter.droid.base.utils.VersionUtils;
-import butter.droid.fragments.dialog.MessageDialogFragment;
 import butter.droid.fragments.MovieDetailFragment;
 import butter.droid.fragments.ShowDetailFragment;
 import butter.droid.fragments.base.BaseDetailFragment;
+import butter.droid.fragments.dialog.MessageDialogFragment;
 import butter.droid.utils.ActionBarBackground;
 import butter.droid.widget.ObservableParallaxScrollView;
+import butterknife.Bind;
 import timber.log.Timber;
 
 public class MediaDetailActivity extends ButterBaseActivity implements BaseDetailFragment.FragmentListener {
@@ -70,8 +70,7 @@ public class MediaDetailActivity extends ButterBaseActivity implements BaseDetai
 
     public static void startActivity(Context context, Media media) {
         Intent intent = new Intent(context, MediaDetailActivity.class);
-        if (media != null)
-            sMedia = media;
+        if (media != null) sMedia = media;
         context.startActivity(intent);
     }
 

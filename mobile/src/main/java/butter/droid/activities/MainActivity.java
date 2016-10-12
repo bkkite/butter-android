@@ -116,7 +116,6 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
 
         FragmentManager.enableDebugLogging(BuildConfig.DEBUG);
 
-
         setSupportActionBar(mToolbar);
         setShowCasting(true);
 
@@ -158,9 +157,6 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_overview, menu);
 
-        MenuItem playerTestMenuItem = menu.findItem(R.id.action_playertests);
-        playerTestMenuItem.setVisible(Constants.DEBUG_ENABLED);
-
         return true;
     }
 
@@ -170,9 +166,6 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
             case android.R.id.home:
                 /* Override default {@link pct.droid.activities.BaseActivity } behaviour */
                 return false;
-            case R.id.action_playertests:
-                openPlayerTestDialog();
-                break;
             case R.id.action_search:
                 //start the search activity
                 SearchActivity.startActivity(this, mNavigationDrawerFragment.getCurrentItem().getMediaProvider());
@@ -206,12 +199,12 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
     }
 
     public void updateTabs(MediaContainerFragment containerFragment, final int position) {
-        if(mTabs == null)
+        if (mTabs == null)
             return;
 
-        if(containerFragment != null) {
+        if (containerFragment != null) {
             ViewPager viewPager = containerFragment.getViewPager();
-            if(viewPager == null)
+            if (viewPager == null)
                 return;
 
             mTabs.setupWithViewPager(viewPager);
@@ -222,12 +215,12 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
             viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabs));
             mTabs.setOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
 
-            if(mTabs.getTabCount() > 0) {
+            if (mTabs.getTabCount() > 0) {
                 mTabs.getTabAt(0).select();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if(mTabs.getTabCount() > position)
+                        if (mTabs.getTabCount() > position)
                             mTabs.getTabAt(position).select();
                     }
                 }, 10);
@@ -236,90 +229,6 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
         } else {
             mTabs.setVisibility(View.GONE);
         }
-    }
-
-    private void openPlayerTestDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
-        final String[] file_types = getResources().getStringArray(R.array.file_types);
-        final String[] files = getResources().getStringArray(R.array.files);
-
-        builder.setTitle("Player Tests")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).setSingleChoiceItems(file_types, -1, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int index) {
-                dialogInterface.dismiss();
-                final String location = files[index];
-                if (location.equals("dialog")) {
-                    final EditText dialogInput = new EditText(MainActivity.this);
-                    dialogInput.setText("http://download.wavetlan.com/SVV/Media/HTTP/MP4/ConvertedFiles/QuickTime/QuickTime_test13_5m19s_AVC_VBR_324kbps_640x480_25fps_AAC-LCv4_CBR_93.4kbps_Stereo_44100Hz.mp4");
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-                            .setView(dialogInput)
-                            .setPositiveButton("Start", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
-
-                                    media.videoId = "dialogtestvideo";
-                                    media.title = "User input test video";
-
-                                    String location = dialogInput.getText().toString();
-
-                                    BeamManager bm = BeamManager.getInstance(MainActivity.this);
-                                    if (bm.isConnected()) {
-                                        BeamPlayerActivity.startActivity(MainActivity.this, new StreamInfo(media, null, null, null, null, location), 0);
-                                    } else {
-                                        VideoPlayerActivity.startActivity(MainActivity.this, new StreamInfo(media, null, null, null, null, location), 0);
-                                    }
-                                }
-                            });
-                    builder.show();
-                } else if (YouTubeData.isYouTubeUrl(location)) {
-                    Intent i = new Intent(MainActivity.this, TrailerPlayerActivity.class);
-                    Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
-                    media.title = file_types[index];
-                    i.putExtra(TrailerPlayerActivity.DATA, media);
-                    i.putExtra(TrailerPlayerActivity.LOCATION, location);
-                    startActivity(i);
-                } else {
-                    final Movie media = new Movie(new PelisMagnetProvider(), new YSubsProvider());
-                    media.videoId = "bigbucksbunny";
-                    media.title = file_types[index];
-                    media.subtitles = new HashMap<>();
-                    media.subtitles.put("en", "http://sv244.cf/bbb-subs.srt");
-
-                    SubsProvider.download(MainActivity.this, media, "en", new Callback() {
-                        @Override
-                        public void onFailure(Request request, IOException e) {
-                            BeamManager bm = BeamManager.getInstance(MainActivity.this);
-
-                            if (bm.isConnected()) {
-                                BeamPlayerActivity.startActivity(MainActivity.this, new StreamInfo(media, null, null, null, null, location), 0);
-                            } else {
-                                VideoPlayerActivity.startActivity(MainActivity.this, new StreamInfo(media, null, null, null, null, location), 0);
-                            }
-                        }
-
-                        @Override
-                        public void onResponse(Response response) throws IOException {
-                            BeamManager bm = BeamManager.getInstance(MainActivity.this);
-                            if (bm.isConnected()) {
-                                BeamPlayerActivity.startActivity(MainActivity.this, new StreamInfo(media, null, null, "en", null, location), 0);
-                            } else {
-                                VideoPlayerActivity.startActivity(MainActivity.this, new StreamInfo(media, null, null, "en", null, location), 0);
-                            }
-                        }
-                    });
-                }
-            }
-        });
-
-        builder.show();
     }
 
     @Override

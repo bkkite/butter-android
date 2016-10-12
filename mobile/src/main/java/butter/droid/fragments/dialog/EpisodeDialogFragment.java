@@ -40,6 +40,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
@@ -430,8 +431,17 @@ public class EpisodeDialogFragment extends DialogFragment {
         smoothDismiss();
         if (mEpisode.torrents.get(mSelectedQuality).isDownloaded == true)
         {
-            String path_video = FileUtils.getMagnetDownloadedPathVideoFile(mActivity, mEpisode.torrents.get(mSelectedQuality).hash);
-            DefaultPlayer.startOffLine(mEpisode, path_video);
+            final ArrayList<String> video_files = FileUtils.getMagnetDownloadedVideoFiles(mActivity, mEpisode.torrents.get(mSelectedQuality).hash);
+
+            ChooserOptionDialogFragment.show(mActivity, getChildFragmentManager(), R.string.select_video, video_files, android.R.string.yes, android.R.string.no, new ChooserOptionDialogFragment.Listener() {
+                @Override
+                public void onItemSelected(int position) {
+                    DefaultPlayer.startOffLine(mEpisode, video_files.get(position));
+                }
+
+                @Override
+                public void onSelectionNegative() {}
+            });
         }
         else
         {

@@ -69,6 +69,38 @@ public class TvShowDetailMagnet {
         return false;
     }
 
+    private int getNumSeason(Temporada temporada)
+    {
+        try {
+            return Integer.parseInt(temporada.numerotemporada);
+        }catch (Exception e)
+        {
+            return 1;
+        }
+    }
+
+    private int getNumEpisode(Capitulo capitulo)
+    {
+        try {
+            return Integer.parseInt(capitulo.numerocapitul);
+        }catch (Exception e)
+        {
+            return 1;
+        }
+
+    }
+
+    private Episode getEpisode(MediaProvider mediaProvider, List<Episode> episodes, int season, int num_episode)
+    {
+        for (Episode episode: episodes)
+        {
+            if (season == episode.season && num_episode == episode.episode)
+                return episode;
+        }
+
+        return new Episode(mediaProvider, null, null);
+    }
+
     public Show getShow(Context context, MediaProvider mediaProvider)
     {
         Show show = new Show(mediaProvider, null);
@@ -107,46 +139,50 @@ public class TvShowDetailMagnet {
         {
             for (Capitulo capitulo: temporada.capituls)
             {
-                Episode episodeObject = new Episode(mediaProvider, null, null);
+                int numSeason = getNumSeason(temporada);
+                int numEpisode = getNumEpisode(capitulo);
 
+                Episode episodeObject = getEpisode(mediaProvider, show.episodes, numSeason, numEpisode);
 
-                if (capitulo.links != null) {
-
-                    episodeObject.torrents.clear();
-
-                    Media.Torrent torrent = new Media.Torrent();
-                    torrent.url = capitulo.links.magnet;
-                    torrent.hash = capitulo.links.hash;
-                    torrent.seeds = torrent.peers = 0;
-                    torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
-                    episodeObject.torrents.put(capitulo.links.calitat, torrent);
-                }
-
-                episodeObject.showName = this.nom;
-                episodeObject.dateBased = true;
-                episodeObject.aired = this.year;
-                episodeObject.title = capitulo.nomcapitul;
-                episodeObject.overview = capitulo.overviewcapitul;
-
-                try {
-                    episodeObject.season = Integer.parseInt(temporada.numerotemporada);
-                }catch (Exception e)
+                if (episodeObject.torrents.isEmpty())
                 {
-                    episodeObject.season = 1;
-                }
+                    episodeObject.showName = this.nom;
+                    episodeObject.dateBased = true;
+                    episodeObject.aired = this.year;
+                    episodeObject.title = capitulo.nomcapitul;
+                    episodeObject.overview = capitulo.overviewcapitul;
 
-                try {
-                    episodeObject.episode = Integer.parseInt(capitulo.numerocapitul);
-                }catch (Exception e)
+                    episodeObject.season = numSeason;
+                    episodeObject.episode = numEpisode;
+
+                    episodeObject.videoId = show.videoId;
+                    episodeObject.imdbId = show.videoId;
+                    episodeObject.image = episodeObject.fullImage = episodeObject.headerImage = show.headerImage;
+
+                    if (capitulo.links != null)
+                    {
+                        Media.Torrent torrent = new Media.Torrent();
+                        torrent.url = capitulo.links.magnet;
+                        torrent.hash = capitulo.links.hash;
+                        torrent.seeds = torrent.peers = 0;
+                        torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
+                        episodeObject.torrents.put(capitulo.links.calitat, torrent);
+                    }
+
+                    show.episodes.add(episodeObject);
+                }
+                else
                 {
-                    episodeObject.episode = 1;
+                    if (capitulo.links != null)
+                    {
+                        Media.Torrent torrent = new Media.Torrent();
+                        torrent.url = capitulo.links.magnet;
+                        torrent.hash = capitulo.links.hash;
+                        torrent.seeds = torrent.peers = 0;
+                        torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
+                        episodeObject.torrents.put(capitulo.links.calitat, torrent);
+                    }
                 }
-
-                episodeObject.videoId = show.videoId;
-                episodeObject.imdbId = show.videoId;
-                episodeObject.image = episodeObject.fullImage = episodeObject.headerImage = show.headerImage;
-
-                show.episodes.add(episodeObject);
             }
         }
 

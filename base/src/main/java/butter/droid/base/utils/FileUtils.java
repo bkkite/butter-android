@@ -41,7 +41,9 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import butter.droid.base.content.UnicodeBOMInputStream;
 import butter.droid.base.content.preferences.Prefs;
@@ -49,11 +51,24 @@ import butter.droid.base.content.preferences.Prefs;
 public class FileUtils {
 
     private static HashMap<String, String> sOverrideMap;
+    private static List<String> sVideoPattern;
 
     static {
         sOverrideMap = new HashMap<>();
         sOverrideMap.put("tr", "ISO-8859-9");
         sOverrideMap.put("sr", "Windows-1250");
+
+        sVideoPattern = new ArrayList<String>();
+        sVideoPattern.add(".avi");
+        sVideoPattern.add(".mkv");
+        sVideoPattern.add(".mp4");
+        sVideoPattern.add(".mov");
+        sVideoPattern.add(".mng");
+        sVideoPattern.add(".flv");
+        sVideoPattern.add(".f4v");
+        sVideoPattern.add(".f4p");
+        sVideoPattern.add(".f4a");
+        sVideoPattern.add(".f4b");
     }
 
     /**
@@ -314,5 +329,50 @@ public class FileUtils {
         }
         else
             return "";
+    }
+
+    private static boolean prvIsVideoFile(File file)
+    {
+        assert(file.isDirectory() == false);
+
+        for (String fileName:sVideoPattern) {
+            if (file.getName().endsWith(fileName)) return true;
+        }
+
+        return false;
+    }
+
+    private static void prvSearchVideo(File dir, ArrayList<String> videoFiles)
+    {
+        final File listFile[] = dir.listFiles();
+
+        if (listFile != null) {
+            for (int i = 0; i < listFile.length; i++) {
+                final int x = i;
+                if (listFile[i].isDirectory()) {
+                    prvSearchVideo(listFile[i], videoFiles);
+                } else {
+                    if (prvIsVideoFile(listFile[i])) {
+                        // Do what ever u want, add the path of the video to the list
+                        videoFiles.add(listFile[i].getAbsolutePath());
+                    }
+                }
+            }
+        }
+    }
+
+    public static ArrayList<String> getMagnetDownloadedVideoFiles(Context context, String hash)
+    {
+        if (PrefUtils.get(context, Prefs.DOWNLOAD_CACHE, true))
+        {
+            File path = prvDownloadedPathFile(context, hash);
+
+            ArrayList<String> videoFiles = new ArrayList<String>();
+            prvSearchVideo(path, videoFiles);
+
+            return videoFiles;
+        }
+        else
+            return null;
     }
 }

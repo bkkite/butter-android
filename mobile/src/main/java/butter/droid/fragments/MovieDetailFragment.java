@@ -2,12 +2,16 @@ package butter.droid.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,6 +22,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Map;
@@ -28,6 +33,8 @@ import butter.droid.activities.VideoPlayerActivity;
 import butter.droid.base.content.preferences.DefaultPlayer;
 import butter.droid.base.content.preferences.DefaultQuality;
 import butter.droid.base.content.preferences.Prefs;
+import butter.droid.base.database.tables.Downloads;
+import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.providers.subs.SubsProvider;
 import butter.droid.base.torrent.Magnet;
@@ -42,6 +49,7 @@ import butter.droid.base.utils.ThreadUtils;
 import butter.droid.base.utils.VersionUtils;
 import butter.droid.base.youtube.YouTubeData;
 import butter.droid.fragments.base.BaseDetailFragment;
+import butter.droid.fragments.dialog.ChooserOptionDialogFragment;
 import butter.droid.fragments.dialog.SynopsisDialogFragment;
 import butter.droid.widget.OptionSelector;
 import butterknife.Bind;
@@ -254,6 +262,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 mQuality.setText(mSelectedQuality);
                 mQuality.setDefault(qualityIndex);
 
+                setHasOptionsMenu(true);
+
                 renderDownloaded();
                 updateMagnet();
             }
@@ -280,11 +290,41 @@ public class MovieDetailFragment extends BaseDetailFragment {
         mAttached = false;
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+
+        if (sMovie.isDownloaded() == true)
+            inflater.inflate(R.menu.fragment_movie_detail_downloaded, menu);
+        else
+            inflater.inflate(R.menu.fragment_movie_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (sMovie.isDownloaded())
+        {
+            switch (item.getItemId())
+            {
+                case R.id.action_not_watched: return notWatchedMovie();
+                case R.id.action_watched: return watchedMovie();
+                case R.id.action_delete: return deleteMovie();
+                default: return super.onOptionsItemSelected(item);
+            }
+        }
+        else {
+            switch (item.getItemId()) {
+                case R.id.action_download: return downloadMagnet();
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }
+    }
+
     private void renderDownloaded()
     {
-        if (mDownloaded.getVisibility() == View.GONE){
+        if (mDownloaded.getVisibility() == View.GONE)
             mDownloaded.setVisibility(View.VISIBLE);
-        }
 
         if (sMovie.torrents.get(mSelectedQuality).isDownloaded)
             mDownloaded.setImageResource(R.drawable.ic_source_offline_media);
@@ -303,6 +343,50 @@ public class MovieDetailFragment extends BaseDetailFragment {
         } else {
             mOpenMagnet.setVisibility(View.VISIBLE);
         }
+    }
+
+    private boolean downloadMagnet()
+    {
+        try {
+            Downloads.insertMovie(getContext(), sMovie, mSelectedQuality);
+        }
+        catch (UnsupportedOperationException e){
+            e.printStackTrace();
+        }
+        finally {
+            mMagnet.open(mActivity);
+            return true;
+        }
+    }
+
+    private boolean notWatchedMovie(){
+        int numUpdated = Downloads.setMovieNotWatched(getContext(), sMovie, mSelectedQuality);
+
+        if (numUpdated > 0)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean watchedMovie(){
+        int numUpdated = Downloads.setMovieWatched(getContext(), sMovie, mSelectedQuality);
+
+        if (numUpdated > 0)
+            return true;
+        else
+            return false;
+    }
+
+    private boolean deleteMovie()
+    {
+        int numDeleted = Downloads.deleteMovie(getContext(), sMovie);
+
+        if (numDeleted > 0) {
+            getFragmentManager().popBackStack();
+            return true;
+        }
+        else
+            return false;
     }
 
     @OnClick(R.id.read_more)
@@ -329,8 +413,17 @@ public class MovieDetailFragment extends BaseDetailFragment {
     public void play() {
         if (sMovie.torrents.get(mSelectedQuality).isDownloaded == true)
         {
-            String path_video = FileUtils.getMagnetDownloadedPathVideoFile(mActivity, sMovie.torrents.get(mSelectedQuality).hash);
-            DefaultPlayer.startOffLine(sMovie, path_video);
+            final ArrayList<String> video_files = FileUtils.getMagnetDownloadedVideoFiles(mActivity, sMovie.torrents.get(mSelectedQuality).hash);
+
+            ChooserOptionDialogFragment.show(mActivity, getChildFragmentManager(), R.string.select_video, video_files, android.R.string.yes, android.R.string.no, new ChooserOptionDialogFragment.Listener() {
+                @Override
+                public void onItemSelected(int position) {
+                    DefaultPlayer.startOffLine(sMovie, video_files.get(position));
+                }
+
+                @Override
+                public void onSelectionNegative() {}
+            });
         }
         else
         {
@@ -342,7 +435,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
     @OnClick(R.id.magnet)
     public void openMagnet() {
-        mMagnet.open(mActivity);
+        downloadMagnet();
     }
 
     private void onSubtitleLanguageSelected(String language) {

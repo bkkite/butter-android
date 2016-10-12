@@ -293,4 +293,13 @@
   <string name="download_cache">Activar directorio para reproducir contenido offline</string>
   <string name="download_location">Directorio de descarga</string>
   <string name="downloaded">Descargado</string>
+  <string name="title_downloaded">Descargado</string>
+  <string name="all">Todo</string>
+  <string name="not_watched">No visto</string>
+  <string name="watched">Visto</string>
+  <string name="release_hd_date">HD Fecha estreno</string>
+  <string name="delete">Borrar</string>
+  <string name="download">Descargar</string>
+  <string name="movies_error">No hay peliculas</string>
+  <string name="select_video">Selecciona un video</string>
 </resources>

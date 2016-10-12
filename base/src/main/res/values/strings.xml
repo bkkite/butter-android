@@ -18,7 +18,7 @@
 
 <resources>
 
-    <string name="app_name" translatable="false">Butter</string>
+    <string name="app_name" translatable="false">BK Theater</string>
     <string name="cancel">Cancel</string>
     <string name="close">Close</string>
     <string name="ok">OK</string>
@@ -28,7 +28,7 @@
     <string name="update_available">New update available</string>
     <string name="wrong_abi">Uhoh! You\'re using the wrong version of Butter for Android. The right version is being downloaded right now, if possible. If the installer is not started within a minute then your device is not supported or your internet connection is broken, which means you should try again later. If the installer fails then you must install the right version manually.</string>
     <string name="press_install">Press to install</string>
-	<string name="movies_error" translatable="false">No movies found</string>
+	<string name="movies_error">No movies found</string>
     <string name="loading_data">Loading data…</string>
     <string name="loading_details">Loading details…</string>
 	<string name="loading_shows">Loading shows…</string>
@@ -42,6 +42,7 @@
     <string name="tap_to_close">Tap to close</string>
     <string name="tap_to_resume">Tap to resume</string>
     <string name="stop">Stop</string>
+    <string name="delete">Delete</string>
 
     <!-- Overview strings -->
     <string name="search_hint">Title, year, actors</string>
@@ -52,6 +53,7 @@
     <string name="title_shows">Shows</string>
     <string name="title_movies">Movies</string>
     <string name="title_anime">Anime</string>
+    <string name="title_downloaded">Downloaded</string>
 
     <string name="signature_invalid">App signature invalid</string>
     <string name="possibly_dangerous">This app has been tampered with. Please download a new install file from butterproject.org</string>
@@ -136,6 +138,8 @@
     <string name="no_synopsis_available">No synopsis available</string>
     <string name="magnet">Magnet</string>
     <string name="scale">Scale</string>
+    <string name="download">Download</string>
+    <string name="select_video">Select a file</string>
     <!-- About as in 'About serie X' -->
     <string name="about_series">About</string>
 
@@ -219,8 +223,10 @@
     <string name="last_updated">LAST UPDATED</string>
     <string name="year">YEAR</string>
     <string name="a_to_z">A - Z</string>
-    <string name="downloaded">DOWNLOADED</string>
     <string name="hd" translatable="false">HD</string>
+    <string name="all">All</string>
+    <string name="watched">Watched</string>
+    <string name="not_watched">Not watched</string>
 
     <string name="trending">TRENDING</string>
     <string name="encountered_error_title">Video error encountered</string>
@@ -362,5 +368,6 @@ By using \'BUTTER\' or accessing this site you affirm that you are either more t
 
     <!-- PTVSettingsFragment -->
     <string name="version_pref">Version</string>
+    <string name="downloaded">Download</string>
 
 </resources>

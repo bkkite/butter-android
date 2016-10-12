@@ -28,6 +28,9 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -217,8 +220,8 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
 
         //don't load initial data in search mode
         if (mMode != Mode.SEARCH && mAdapter.getItemCount() == 0) {
-            mCurrentCall = mProvider.getList(new MediaProvider.Filters(mFilters), mCallback);/* fetch new items */
             setState(State.LOADING);
+            mCurrentCall = mProvider.getList(new MediaProvider.Filters(mFilters), mCallback);/* fetch new items */
         } else updateUI();
     }
 
@@ -341,13 +344,13 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
                 return;
             }
 
+            mItems.addAll(items);
             ThreadUtils.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     setState(State.LOADED);
                 }
             });
-            mItems.addAll(items);
 
             //fragment may be detached, so we dont want to update the UI
             if (!isAdded())

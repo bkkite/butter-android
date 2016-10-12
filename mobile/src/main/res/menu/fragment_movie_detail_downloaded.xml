@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_not_watched"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_not_watched"
+        android:title="@string/not_watched" />
+
+    <item
+        android:id="@+id/action_watched"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_action_watched"
+        android:title="@string/watched" />
+
+    <item
+        android:id="@+id/action_delete"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_download_delete"
+        android:title="@string/delete" />
+</menu>

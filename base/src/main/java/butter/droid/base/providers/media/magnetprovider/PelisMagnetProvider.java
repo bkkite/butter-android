@@ -22,6 +22,9 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -37,6 +40,7 @@ import java.util.List;
 
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
+import butter.droid.base.database.tables.Downloads;
 import butter.droid.base.providers.media.magnetprovider.pojo.MovieMagnet;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Genre;
@@ -100,10 +104,6 @@ public class PelisMagnetProvider extends MediaProvider {
             case DATE:
                 params.add(new NameValuePair("sort_by", "date_added"));
                 break;
-            case DOWNLOADED:
-                params.add(new NameValuePair("sort_by", "date_added"));
-                filters.onlyDownloaded = true;
-                break;
             case HD:
                 params.add(new NameValuePair("sort_by", "date_added"));
                 filters.onlyHD = true;
@@ -126,6 +126,7 @@ public class PelisMagnetProvider extends MediaProvider {
         requestBuilder.tag(MEDIA_CALL);
 
         return fetchList(currentList, requestBuilder, filters, callback);
+
     }
 
     /**
@@ -187,7 +188,7 @@ public class PelisMagnetProvider extends MediaProvider {
                         callback.onFailure(new NetworkErrorException("No movies found"));
                     } else {
                         PelisMagnetResponse pelisMagmet = new PelisMagnetResponse(result);
-                        ArrayList<Media> formattedData = pelisMagmet.formatForApp(currentList, filters.onlyDownloaded, filters.onlyHD);
+                        ArrayList<Media> formattedData = pelisMagmet.formatForApp(currentList, filters.onlyHD);
                         callback.onSuccess(filters, formattedData, true);
                         return;
                     }
@@ -220,14 +221,13 @@ public class PelisMagnetProvider extends MediaProvider {
          * @param existingList List to be extended
          * @return List with items
          */
-        public ArrayList<Media> formatForApp(ArrayList<Media> existingList, boolean onlyDownloaded, boolean onlyHD) {
+        public ArrayList<Media> formatForApp(ArrayList<Media> existingList, boolean onlyHD) {
 
             Context context = ButterApplication.getAppContext();
 
             for (MovieMagnet movieMagnet : movies)
             {
                 if (movieMagnet.isInResults(existingList) == false
-                        && (onlyDownloaded == false || movieMagnet.isDownloaded(context))
                         && (onlyHD == false || movieMagnet.isHDMovie()))
                 {
                     Movie movie = movieMagnet.getMovie(context, sMediaProvider);
@@ -251,7 +251,6 @@ public class PelisMagnetProvider extends MediaProvider {
         tabs.add(new NavInfo(R.id.magnet_filter_release_date,Filters.Sort.DATE, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.release_date),R.drawable.magnet_filter_release_date));
         tabs.add(new NavInfo(R.id.magnet_filter_top_rated,Filters.Sort.RATING, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.top_rated),R.drawable.magnet_filter_top_rated));
         tabs.add(new NavInfo(R.id.magnet_filter_popular_now,Filters.Sort.POPULARITY, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.popular),R.drawable.magnet_filter_popular_now));
-        tabs.add(new NavInfo(R.id.magnet_filter_a_to_z,Filters.Sort.DOWNLOADED, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.downloaded),R.drawable.magnet_filter_downloaded));
         return tabs;
     }
 
