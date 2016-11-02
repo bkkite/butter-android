@@ -302,4 +302,6 @@
   <string name="download">Descargar</string>
   <string name="movies_error">No hay peliculas</string>
   <string name="select_video">Selecciona un video</string>
+  <string name="msg_delete_movie">Esta acción borrará la pelicula de la Base de datos</string>
+  <string name="question_delete_files">¿Quiere borrar tambíen los ficheros?</string>
 </resources>

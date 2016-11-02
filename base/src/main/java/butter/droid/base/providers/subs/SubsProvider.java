@@ -66,7 +66,7 @@ public abstract class SubsProvider extends BaseProvider {
     }
 
     public static File getStorageLocation(Context context) {
-        return new File(PrefUtils.get(context, Prefs.STORAGE_LOCATION, StorageUtils.getIdealCacheDirectory(context).toString()) + "/subs/");
+        return new File(StorageUtils.getCacheFileLocation(context), "/subs/");
     }
 
     /**

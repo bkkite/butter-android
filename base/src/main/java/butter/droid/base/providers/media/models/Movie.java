@@ -67,6 +67,14 @@ public class Movie extends Media implements Parcelable {
         return false;
     }
 
+    public String getHash(final String quality)
+    {
+        if (this.torrents.containsKey(quality))
+            return this.torrents.get(quality).hash;
+        else
+            return null;
+    }
+
     @Override
     public int describeContents() {
         return 0;

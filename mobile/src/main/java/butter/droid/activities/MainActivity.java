@@ -100,17 +100,24 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
         }
 
-        String action = getIntent().getAction();
-        Uri data = getIntent().getData();
-        if (action != null && action.equals(Intent.ACTION_VIEW) && data != null) {
-            String streamUrl = data.toString();
-            try {
-                streamUrl = URLDecoder.decode(streamUrl, "utf-8");
-                StreamLoadingActivity.startActivity(this, new StreamInfo(streamUrl));
-                finish();
-                return;
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+        {
+            //TODO: Cambiar cuando implementemos el servicio de torrents
+            /*
+                Añadir el torrent a la lista de descargados con el estado de download
+             */
+
+            String action = getIntent().getAction();
+            Uri data = getIntent().getData();
+            if (action != null && action.equals(Intent.ACTION_VIEW) && data != null) {
+                String streamUrl = data.toString();
+                try {
+                    streamUrl = URLDecoder.decode(streamUrl, "utf-8");
+                    StreamLoadingActivity.startActivity(this, new StreamInfo(streamUrl));
+                    finish();
+                    return;
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -130,7 +137,7 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
 
         mNavigationDrawerFragment.initialise(mNavigationDrawerContainer, drawerLayout);
 
-        if (null != savedInstanceState) return;
+        if (savedInstanceState != null) return;
         int providerId = PrefUtils.get(this, Prefs.DEFAULT_VIEW, 0);
         mNavigationDrawerFragment.selectItem(providerId);
     }
@@ -139,7 +146,7 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
     protected void onResume() {
         super.onResume();
         String title = mNavigationDrawerFragment.getCurrentItem().getTitle();
-        setTitle(null != title ? title : getString(R.string.app_name));
+        setTitle(title != null ? title : getString(R.string.app_name));
         supportInvalidateOptionsMenu();
         if (mNavigationDrawerFragment.getCurrentItem() != null && mNavigationDrawerFragment.getCurrentItem().getTitle() != null) {
             setTitle(mNavigationDrawerFragment.getCurrentItem().getTitle());
@@ -149,6 +156,7 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
 
         if(BeamServerService.getServer() != null)
             BeamServerService.getServer().stop();
+
         BeamPlayerNotificationService.cancelNotification();
     }
 
@@ -177,14 +185,14 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
 
     @Override
     public void onNavigationDrawerItemSelected(NavigationDrawerFragment.NavDrawerItem item, String title) {
-        setTitle(null != title ? title : getString(R.string.app_name));
+        setTitle(title != null ? title : getString(R.string.app_name));
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         String tag = title + "_tag";
         // Fragment fragment = mFragmentCache.get(position);
         mCurrentFragment = fragmentManager.findFragmentByTag(tag);
-        if (null == mCurrentFragment && item.hasProvider()) {
+        if (mCurrentFragment == null && item.hasProvider()) {
             mCurrentFragment = MediaContainerFragment.newInstance(item.getMediaProvider());
         }
 

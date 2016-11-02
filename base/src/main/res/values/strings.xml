@@ -369,5 +369,7 @@ By using \'BUTTER\' or accessing this site you affirm that you are either more t
     <!-- PTVSettingsFragment -->
     <string name="version_pref">Version</string>
     <string name="downloaded">Download</string>
+    <string name="msg_delete_movie">This action will delete the movie</string>
+    <string name="question_delete_files">Delete all files?</string>
 
 </resources>

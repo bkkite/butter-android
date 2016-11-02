@@ -135,7 +135,7 @@ public class Downloads implements BaseColumns {
                 movie.trailer = "";
                 movie.runtime = "";
                 movie.synopsis = cursor.getString(cursor.getColumnIndexOrThrow(Downloads._SYPNOPSIS));
-                movie.fullImage = cursor.getString(cursor.getColumnIndexOrThrow(Downloads._POSTER_URL));
+                movie.fullImage = cursor.getString(cursor.getColumnIndexOrThrow(Downloads._HEADER_URL));
 
                 movie.torrents.clear();
 
@@ -170,7 +170,7 @@ public class Downloads implements BaseColumns {
         values.put(_YEAR, info.year);
         values.put(_GENRE, info.genre);
         values.put(_RATING, info.rating);
-        values.put(_POSTER_URL, info.fullImage);
+        values.put(_POSTER_URL, info.image);
         values.put(_HEADER_URL, info.headerImage);
         values.put(_SYPNOPSIS, info.synopsis);
         values.put(_STATE, state);

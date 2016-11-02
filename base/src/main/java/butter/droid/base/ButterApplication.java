@@ -95,7 +95,7 @@ public class ButterApplication extends Application implements ButterUpdater.List
             TorrentService.start(this);
         }
 
-        File path = new File(PrefUtils.get(this, Prefs.STORAGE_LOCATION, StorageUtils.getIdealCacheDirectory(this).toString()));
+        File path = StorageUtils.getCacheFileLocation(getAppContext());
         File directory = new File(path, "/torrents/");
         if (PrefUtils.get(this, Prefs.REMOVE_CACHE, true)) {
             FileUtils.recursiveDelete(directory);
@@ -139,7 +139,7 @@ public class ButterApplication extends Application implements ButterUpdater.List
             sHttpClient.setRetryOnConnectionFailure(true);
 
             int cacheSize = 10 * 1024 * 1024;
-            File cacheLocation = new File(PrefUtils.get(ButterApplication.getAppContext(), Prefs.STORAGE_LOCATION, StorageUtils.getIdealCacheDirectory(ButterApplication.getAppContext()).toString()));
+            File cacheLocation = StorageUtils.getCacheFileLocation(getAppContext());
             cacheLocation.mkdirs();
             com.squareup.okhttp.Cache cache = null;
             try {
@@ -153,7 +153,7 @@ public class ButterApplication extends Application implements ButterUpdater.List
     }
 
     public static String getStreamDir() {
-        File path = new File(PrefUtils.get(getAppContext(), Prefs.STORAGE_LOCATION, StorageUtils.getIdealCacheDirectory(getAppContext()).toString()));
+        File path = StorageUtils.getCacheFileLocation(getAppContext());
         File directory = new File(path, "/torrents/");
         return directory.toString();
     }

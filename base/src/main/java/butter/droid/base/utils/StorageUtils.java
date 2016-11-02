@@ -28,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import butter.droid.base.content.preferences.Prefs;
+
 public class StorageUtils {
 
     public static final String SD_CARD = "sdCard";
@@ -192,19 +194,6 @@ public class StorageUtils {
     }
 
     /**
-     * Get ideal cache directory based on available
-     *
-     * @return Ideal file location for caching
-     */
-    public static File getIdealCacheDirectory(Context context) {
-        File externalCacheDir = context.getExternalCacheDir();
-        if (getTotalExternalMemorySize() < getTotalInternalMemorySize() || externalCacheDir == null) {
-            return context.getCacheDir();
-        }
-        return externalCacheDir;
-    }
-
-    /**
      * Format size in string form
      *
      * @param size Size in bytes
@@ -232,5 +221,42 @@ public class StorageUtils {
 
         if (suffix != null) resultBuffer.append(suffix);
         return resultBuffer.toString();
+    }
+
+    /**
+     * Get ideal cache directory based on available
+     *
+     * @return Ideal file location for caching
+     */
+    private static File getIdealCacheDirectory(Context context) {
+        File externalCacheDir = context.getExternalCacheDir();
+        if (getTotalExternalMemorySize() < getTotalInternalMemorySize() || externalCacheDir == null) {
+            return context.getCacheDir();
+        }
+        return externalCacheDir;
+    }
+
+    /**
+     * Get ideal storage directory based on available
+     *
+     * @return Ideal file location for storage
+     */
+    public static File getStorageLocation(Context context)
+    {
+        return new File(PrefUtils.get(context, Prefs.STORAGE_LOCATION, StorageUtils.getIdealCacheDirectory(context).toString()));
+    }
+
+    /**
+     * Get ideal cache directory
+     *
+     * @return Ideal file location for caching
+     */
+    public static File getCacheFileLocation(Context context)
+    {
+        File downloadLocation;
+
+        downloadLocation = getStorageLocation(context);
+
+        return new File(downloadLocation + "/cache/");
     }
 }

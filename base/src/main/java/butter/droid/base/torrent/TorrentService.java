@@ -88,7 +88,7 @@ public class TorrentService extends Service implements TorrentListener {
         options.setMaxConnections(PrefUtils.get(this, Prefs.LIBTORRENT_CONNECTION_LIMIT, 200));
         options.setMaxDownloadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_DOWNLOAD_LIMIT, 0));
         options.setMaxUploadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_UPLOAD_LIMIT, 0));
-        options.setSaveLocation(PrefUtils.get(this, Prefs.STORAGE_LOCATION, ButterApplication.getStreamDir()));
+        options.setSaveLocation(ButterApplication.getStreamDir());
         mTorrentStream = TorrentStream.init(options);
     }
 
@@ -215,7 +215,7 @@ public class TorrentService extends Service implements TorrentListener {
         options.setMaxConnections(PrefUtils.get(this, Prefs.LIBTORRENT_CONNECTION_LIMIT, 200));
         options.setMaxDownloadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_DOWNLOAD_LIMIT, 0));
         options.setMaxUploadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_UPLOAD_LIMIT, 0));
-        options.setSaveLocation(PrefUtils.get(this, Prefs.STORAGE_LOCATION, ButterApplication.getStreamDir()));
+        options.setSaveLocation(ButterApplication.getStreamDir());
         mTorrentStream.setOptions(options);
 
         mIsReady = false;

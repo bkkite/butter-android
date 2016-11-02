@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import butter.droid.base.BuildConfig;
 import butter.droid.base.Constants;
 import butter.droid.base.R;
 import butter.droid.base.fragments.dialog.ChangeLogDialogFragment;
@@ -478,7 +477,7 @@ public interface PreferencesHandler {
                     .setTitleResource(R.string.storage_location)
                     .setPreferenceKey(Prefs.STORAGE_LOCATION)
                     .hasNext(true)
-                    .setDefaultValue(StorageUtils.getIdealCacheDirectory(context))
+                    .setDefaultValue(StorageUtils.getCacheFileLocation(context))
                     .setOnClickListener(new PrefItem.OnClickListener() {
                         @Override
                         public void onClick(final PrefItem item) {
@@ -506,56 +505,6 @@ public interface PreferencesHandler {
                     .setIconResource(R.drawable.ic_prefs_remove_cache)
                     .setTitleResource(R.string.remove_cache)
                     .setPreferenceKey(Prefs.REMOVE_CACHE)
-                    .setDefaultValue(true)
-                    .setOnClickListener(new PrefItem.OnClickListener() {
-                        @Override
-                        public void onClick(final PrefItem item) {
-                            item.saveValue(!(boolean) item.getValue());
-                        }
-                    })
-                    .setSubtitleGenerator(new PrefItem.SubtitleGenerator() {
-                        @Override
-                        public String get(PrefItem item) {
-                            boolean enabled = (boolean) item.getValue();
-                            return enabled ? context.getString(R.string.enabled) : context.getString(R.string.disabled);
-                        }
-                    })
-                    .build());
-
-            if(!isTV)
-                prefItems.add(PrefItem.newBuilder(context)
-                        .setIconResource(R.drawable.ic_prefs_storage_location)
-                        .setTitleResource(R.string.download_location)
-                        .setPreferenceKey(Prefs.DOWNLOAD_STORAGE_LOCATION)
-                        .hasNext(true)
-                        .setDefaultValue(StorageUtils.getIdealCacheDirectory(context))
-                        .setOnClickListener(new PrefItem.OnClickListener() {
-                            @Override
-                            public void onClick(final PrefItem item) {
-                                handler.openListSelection(item.getTitle(), null, SelectionMode.DIRECTORY, item.getValue(), 0, 0, new OnSelectionListener() {
-                                    @Override
-                                    public void onSelection(int position, Object value) {
-                                        if(value != null) {
-                                            item.saveValue(value);
-                                        } else {
-                                            item.clearValue();
-                                        }
-                                    }
-                                });
-                            }
-                        })
-                        .setSubtitleGenerator(new PrefItem.SubtitleGenerator() {
-                            @Override
-                            public String get(PrefItem item) {
-                                return item.getValue().toString();
-                            }
-                        })
-                        .build());
-
-            prefItems.add(PrefItem.newBuilder(context)
-                    .setIconResource(R.drawable.ic_prefs_remove_cache)
-                    .setTitleResource(R.string.download_cache)
-                    .setPreferenceKey(Prefs.DOWNLOAD_CACHE)
                     .setDefaultValue(true)
                     .setOnClickListener(new PrefItem.OnClickListener() {
                         @Override

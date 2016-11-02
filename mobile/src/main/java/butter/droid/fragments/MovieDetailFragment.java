@@ -50,6 +50,8 @@ import butter.droid.base.utils.VersionUtils;
 import butter.droid.base.youtube.YouTubeData;
 import butter.droid.fragments.base.BaseDetailFragment;
 import butter.droid.fragments.dialog.ChooserOptionDialogFragment;
+import butter.droid.fragments.dialog.OptionDeleteMovieDialogFragment;
+import butter.droid.fragments.dialog.OptionDialogFragment;
 import butter.droid.fragments.dialog.SynopsisDialogFragment;
 import butter.droid.widget.OptionSelector;
 import butterknife.Bind;
@@ -379,14 +381,25 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
     private boolean deleteMovie()
     {
-        int numDeleted = Downloads.deleteMovie(getContext(), sMovie);
+        OptionDeleteMovieDialogFragment.show(getFragmentManager(), new OptionDeleteMovieDialogFragment.Listener() {
+            @Override
+            public void onSelectionPositive(boolean delete_files) {
 
-        if (numDeleted > 0) {
-            getFragmentManager().popBackStack();
-            return true;
-        }
-        else
-            return false;
+                int numDeleted = Downloads.deleteMovie(getContext(), sMovie);
+
+                if (numDeleted > 0) {
+                    getFragmentManager().popBackStack();
+                }
+
+                if (delete_files)
+                    FileUtils.deleteMagnetDownloadedPathVideoFiles(getContext(), sMovie.getHash(mSelectedQuality));
+            }
+
+            @Override
+            public void onSelectionNegative() {}
+        });
+
+        return true;
     }
 
     @OnClick(R.id.read_more)

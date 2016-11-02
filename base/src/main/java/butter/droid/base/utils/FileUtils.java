@@ -303,32 +303,36 @@ public class FileUtils {
 
     private static File prvDownloadedPathFile(Context context, String hash)
     {
-        String dowload_location = PrefUtils.get(context, Prefs.DOWNLOAD_STORAGE_LOCATION, StorageUtils.getIdealCacheDirectory(context).toString());
-        String folder = "/magnet (" + hash + ")/";
+        File storageLocation = StorageUtils.getStorageLocation(context);
 
-        return new File(dowload_location + folder);
+        return new File(storageLocation, "/magnet (" + hash + ")/");
     }
 
+    /**
+     * Get if a magnet file is downloaded
+     *
+     * @param context Context of application
+     * @param hash Hash of torrent file
+     * @return boolean
+     */
     public static boolean getMagnetIsDownloaded(Context context, String hash)
     {
-        if (PrefUtils.get(context, Prefs.DOWNLOAD_CACHE, true))
-        {
-            File path = prvDownloadedPathFile(context, hash);
-            return path.exists();
-        }
-        else
-            return false;
+        File path = prvDownloadedPathFile(context, hash);
+
+        return path.exists();
     }
 
+    /**
+     * Get a String of a downloaded magnet
+     *
+     * @param context Context of application
+     * @param hash Hash of torrent file
+     * @return String
+     */
     public static String getMagnetDownloadedPathVideoFile(Context context, String hash)
     {
-        if (PrefUtils.get(context, Prefs.DOWNLOAD_CACHE, true))
-        {
-            File path = prvDownloadedPathFile(context, hash);
-            return path.toString();
-        }
-        else
-            return "";
+        File path = prvDownloadedPathFile(context, hash);
+        return path.toString();
     }
 
     private static boolean prvIsVideoFile(File file)
@@ -361,18 +365,33 @@ public class FileUtils {
         }
     }
 
+    /**
+     * Get a List of a video files content in downloaded magnet
+     *
+     * @param context Context of application
+     * @param hash Hash of torrent file
+     * @return ArrayList<String>
+     */
     public static ArrayList<String> getMagnetDownloadedVideoFiles(Context context, String hash)
     {
-        if (PrefUtils.get(context, Prefs.DOWNLOAD_CACHE, true))
-        {
-            File path = prvDownloadedPathFile(context, hash);
+        File path = prvDownloadedPathFile(context, hash);
 
-            ArrayList<String> videoFiles = new ArrayList<String>();
-            prvSearchVideo(path, videoFiles);
+        ArrayList<String> videoFiles = new ArrayList<String>();
+        prvSearchVideo(path, videoFiles);
 
-            return videoFiles;
-        }
-        else
-            return null;
+        return videoFiles;
+    }
+
+    /**
+     * Deletes files content in a magnet directory
+     *
+     * @param context Context of application
+     * @param hash Hash of torrent file
+     */
+    public static void deleteMagnetDownloadedPathVideoFiles(Context context, String hash)
+    {
+        File path = prvDownloadedPathFile(context, hash);
+
+        if (path.exists()) recursiveDelete(path);
     }
 }
