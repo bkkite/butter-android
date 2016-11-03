@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
 import android.view.ContextThemeWrapper;
@@ -46,8 +47,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-import butter.droid.activities.VideoPlayerActivity;
 import butter.droid.base.content.preferences.DefaultPlayer;
+import butter.droid.base.torrent.TorrentHealth;
 import butter.droid.base.utils.FileUtils;
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -83,6 +84,7 @@ public class EpisodeDialogFragment extends DialogFragment {
 
     private Integer mThreshold = 0, mBottom = 0;
     private Activity mActivity;
+    private View mRoot;
     private MetaProvider mMetaProvider;
     private SubsProvider mSubsProvider;
     private boolean mTouching = false, mOpened = false;
@@ -114,9 +116,9 @@ public class EpisodeDialogFragment extends DialogFragment {
     @Bind(R.id.magnet)
     @Nullable
     ImageButton mOpenMagnet;
-    @Bind(R.id.downloaded)
+    @Bind(R.id.health)
     @Nullable
-    ImageView mDownloaded;
+    ImageView mHealth;
 
     public static EpisodeDialogFragment newInstance(Show show, Episode episode) {
         EpisodeDialogFragment frag = new EpisodeDialogFragment();
@@ -130,8 +132,8 @@ public class EpisodeDialogFragment extends DialogFragment {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = LayoutInflater.from(new ContextThemeWrapper(getActivity(), R.style.Theme_Butter)).inflate(R.layout.fragment_dialog_episode, container, false);
-        ButterKnife.bind(this, v);
+        mRoot = LayoutInflater.from(new ContextThemeWrapper(getActivity(), R.style.Theme_Butter)).inflate(R.layout.fragment_dialog_episode, container, false);
+        ButterKnife.bind(this, mRoot);
 
         if (!VersionUtils.isJellyBean()) {
             mPlayButton.setBackgroundDrawable(PixelUtils.changeDrawableColor(mPlayButton.getContext(), R.drawable.play_button_circle, mShow.color));
@@ -143,7 +145,7 @@ public class EpisodeDialogFragment extends DialogFragment {
         layoutParams.height = PixelUtils.getScreenHeight(mActivity);
         mPlaceholder.setLayoutParams(layoutParams);
 
-        return v;
+        return mRoot;
     }
 
     @Override
@@ -268,14 +270,14 @@ public class EpisodeDialogFragment extends DialogFragment {
         mQuality.setText(mSelectedQuality);
         mQuality.setDefault(qualityIndex);
 
-        renderDownloaded();
+        renderHealth();
         updateMagnet();
 
         mQuality.setListener(new OptionSelector.SelectorListener() {
             @Override
             public void onSelectionChanged(int position, String value) {
                 mSelectedQuality = value;
-                renderDownloaded();
+                renderHealth();
                 updateMagnet();
             }
         });
@@ -388,16 +390,13 @@ public class EpisodeDialogFragment extends DialogFragment {
         super.onAttach(activity);
     }
 
-    private void renderDownloaded()
-    {
-        if (mDownloaded.getVisibility() == View.GONE){
-            mDownloaded.setVisibility(View.VISIBLE);
+    private void renderHealth() {
+        if(mHealth.getVisibility() == View.GONE) {
+            mHealth.setVisibility(View.VISIBLE);
         }
 
-        if (mEpisode.torrents.get(mSelectedQuality).isDownloaded)
-            mDownloaded.setImageResource(R.drawable.ic_source_offline_media);
-        else
-            mDownloaded.setImageResource(R.drawable.ic_source_online_media);
+        TorrentHealth health = TorrentHealth.calculate(mEpisode.torrents.get(mSelectedQuality).seeds, mEpisode.torrents.get(mSelectedQuality).peers);
+        mHealth.setImageResource(health.getImageResource());
     }
 
     private void updateMagnet() {
@@ -460,6 +459,22 @@ public class EpisodeDialogFragment extends DialogFragment {
     @OnClick(R.id.placeholder)
     public void outsideClick() {
         smoothDismiss();
+    }
+
+    @OnClick(R.id.health)
+    public void clickHealth() {
+        int seeds = mEpisode.torrents.get(mSelectedQuality).seeds;
+        int peers = mEpisode.torrents.get(mSelectedQuality).peers;
+        TorrentHealth health = TorrentHealth.calculate(seeds, peers);
+
+        final Snackbar snackbar = Snackbar.make(mRoot, getString(R.string.health_info, getString(health.getStringResource()), seeds, peers), Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.close, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
     }
 
     private void onSubtitleLanguageSelected(String language) {

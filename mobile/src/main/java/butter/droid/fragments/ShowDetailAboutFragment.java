@@ -43,7 +43,7 @@ public class ShowDetailAboutFragment extends BaseDetailFragment {
     LinearLayout mInfoButtons;
     @Bind(R.id.magnet)
     ImageButton mOpenMagnet;
-    @Bind(R.id.downloaded)
+    @Bind(R.id.health)
     ImageView mDowloaded;
 
     public static ShowDetailAboutFragment newInstance(Show show) {

@@ -2,10 +2,10 @@ package butter.droid.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.Layout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -34,11 +34,11 @@ import butter.droid.base.content.preferences.DefaultPlayer;
 import butter.droid.base.content.preferences.DefaultQuality;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.database.tables.Downloads;
-import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.providers.subs.SubsProvider;
 import butter.droid.base.torrent.Magnet;
 import butter.droid.base.torrent.StreamInfo;
+import butter.droid.base.torrent.TorrentHealth;
 import butter.droid.base.utils.FileUtils;
 import butter.droid.base.utils.LocaleUtils;
 import butter.droid.base.utils.PixelUtils;
@@ -51,7 +51,6 @@ import butter.droid.base.youtube.YouTubeData;
 import butter.droid.fragments.base.BaseDetailFragment;
 import butter.droid.fragments.dialog.ChooserOptionDialogFragment;
 import butter.droid.fragments.dialog.OptionDeleteMovieDialogFragment;
-import butter.droid.fragments.dialog.OptionDialogFragment;
 import butter.droid.fragments.dialog.SynopsisDialogFragment;
 import butter.droid.widget.OptionSelector;
 import butterknife.Bind;
@@ -69,8 +68,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
     ImageButton mPlayButton;
     @Bind(R.id.title)
     TextView mTitle;
-    @Bind(R.id.downloaded)
-    ImageView mDownloaded;
+    @Bind(R.id.health)
+    ImageView mHealth;
     @Bind(R.id.meta)
     TextView mMeta;
     @Bind(R.id.synopsis)
@@ -253,7 +252,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSelectionChanged(int position, String value) {
                         mSelectedQuality = value;
-                        renderDownloaded();
+                        renderHealth();
                         updateMagnet();
                     }
                 });
@@ -266,7 +265,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
                 setHasOptionsMenu(true);
 
-                renderDownloaded();
+                renderHealth();
                 updateMagnet();
             }
 
@@ -323,15 +322,13 @@ public class MovieDetailFragment extends BaseDetailFragment {
         }
     }
 
-    private void renderDownloaded()
-    {
-        if (mDownloaded.getVisibility() == View.GONE)
-            mDownloaded.setVisibility(View.VISIBLE);
+    private void renderHealth() {
+        if(mHealth.getVisibility() == View.GONE) {
+            mHealth.setVisibility(View.VISIBLE);
+        }
 
-        if (sMovie.torrents.get(mSelectedQuality).isDownloaded)
-            mDownloaded.setImageResource(R.drawable.ic_source_offline_media);
-        else
-            mDownloaded.setImageResource(R.drawable.ic_source_online_media);
+        TorrentHealth health = TorrentHealth.calculate(sMovie.torrents.get(mSelectedQuality).seeds, sMovie.torrents.get(mSelectedQuality).peers);
+        mHealth.setImageResource(health.getImageResource());
     }
 
     private void updateMagnet() {
@@ -449,6 +446,22 @@ public class MovieDetailFragment extends BaseDetailFragment {
     @OnClick(R.id.magnet)
     public void openMagnet() {
         downloadMagnet();
+    }
+
+    @OnClick(R.id.health)
+    public void clickHealth() {
+        int seeds = sMovie.torrents.get(mSelectedQuality).seeds;
+        int peers = sMovie.torrents.get(mSelectedQuality).peers;
+        TorrentHealth health = TorrentHealth.calculate(seeds, peers);
+
+        final Snackbar snackbar = Snackbar.make(mRoot, getString(R.string.health_info, getString(health.getStringResource()), seeds, peers), Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.close, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
     }
 
     private void onSubtitleLanguageSelected(String language) {
