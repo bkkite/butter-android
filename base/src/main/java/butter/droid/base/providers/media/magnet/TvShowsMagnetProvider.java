@@ -15,16 +15,13 @@
  * along with Butter. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package butter.droid.base.providers.media.magnetprovider;
+package butter.droid.base.providers.media.magnet;
 
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -40,8 +37,8 @@ import java.util.List;
 
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
-import butter.droid.base.providers.media.magnetprovider.pojo.TvShowDetailMagnet;
-import butter.droid.base.providers.media.magnetprovider.pojo.TvShowMagnet;
+import butter.droid.base.providers.media.magnet.pojo.TvShowDetailMagnet;
+import butter.droid.base.providers.media.magnet.pojo.TvShowMagnet;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Genre;
 import butter.droid.base.providers.media.models.Media;

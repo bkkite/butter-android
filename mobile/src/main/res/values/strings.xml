@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="select_video" />
+    <string name="title_magnet">Magnet</string>
+    <string name="title_popcorn">Popcorn</string>
 </resources>

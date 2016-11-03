@@ -4,25 +4,6 @@
     <!-- default drawables (null) -->
     <!-- override in modules -->
 
-    <drawable name="yts_filter_a_to_z">@android:color/transparent</drawable>
-    <drawable name="yts_filter_genres">@android:color/transparent</drawable>
-    <drawable name="yts_filter_year">@android:color/transparent</drawable>
-    <drawable name="yts_filter_release_date">@android:color/transparent</drawable>
-    <drawable name="yts_filter_top_rated">@android:color/transparent</drawable>
-    <drawable name="yts_filter_popular_now">@android:color/transparent</drawable>
-    <drawable name="yts_filter_trending">@android:color/transparent</drawable>
-
-
-    <drawable name="eztv_filter_trending">@android:color/transparent</drawable>
-    <drawable name="eztv_filter_popular_now">@android:color/transparent</drawable>
-    <drawable name="eztv_filter_top_rated">@android:color/transparent</drawable>
-    <drawable name="eztv_filter_last_updated">@android:color/transparent</drawable>
-    <drawable name="eztv_filter_year">@android:color/transparent</drawable>
-    <drawable name="eztv_filter_a_to_z">@android:color/transparent</drawable>
-
-    <drawable name="haru_filter_popular">@android:color/transparent</drawable>
-    <drawable name="haru_filter_a_to_z">@android:color/transparent</drawable>
-
     <drawable name="magnet_filter_genres">@android:color/transparent</drawable>
     <drawable  name="magnet_filter_a_to_z">@android:color/transparent</drawable>
     <drawable  name="magnet_filter_release_date">@android:color/transparent</drawable>
@@ -31,4 +12,14 @@
     <drawable  name="magnet_filter_popular_now">@android:color/transparent</drawable>
     <drawable  name="magnet_filter_downloaded">@android:color/transparent</drawable>
     <drawable  name="magnet_filter_hd">@android:color/transparent</drawable>
+
+    <drawable name="popcorn_filter_a_to_z">@android:color/transparent</drawable>
+    <drawable name="popcorn_filter_genres">@android:color/transparent</drawable>
+    <drawable name="popcorn_filter_year">@android:color/transparent</drawable>
+    <drawable name="popcorn_filter_release_date">@android:color/transparent</drawable>
+    <drawable name="popcorn_filter_top_rated">@android:color/transparent</drawable>
+    <drawable name="popcorn_filter_popular_now">@android:color/transparent</drawable>
+    <drawable name="popcorn_filter_trending">@android:color/transparent</drawable>
+    <drawable name="popcorn_filter_last_updated">@android:color/transparent</drawable>
+
 </resources>

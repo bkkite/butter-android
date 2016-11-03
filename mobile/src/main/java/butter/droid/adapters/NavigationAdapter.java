@@ -92,6 +92,11 @@ public class NavigationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         holder.mBackgroundImageView.setBackgroundResource(R.color.primary_dark);
         holder.mProfileImageView.setVisibility(View.VISIBLE);
         holder.mProfileImageView.setImageResource(R.drawable.butter_profile);
+
+        NavigationDrawerFragment.NavDrawerItem item = getItem(position);
+
+        if (item.getTitle() != null)
+            holder.mTitleTextView.setText(item.getTitle());
     }
 
     private void onBindItemViewHolder(ItemRowHolder viewHolder, int position) {

@@ -30,7 +30,7 @@ import java.util.List;
 
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.providers.media.MediaProvider;
-import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
+import butter.droid.base.providers.media.magnet.PelisMagnetProvider;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.providers.subs.SubsProvider;

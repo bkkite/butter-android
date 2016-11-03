@@ -42,9 +42,11 @@ import butter.droid.adapters.NavigationAdapter;
 import butter.droid.adapters.decorators.OneShotDividerDecorator;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.providers.media.DownloadProvider;
-import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
-import butter.droid.base.providers.media.magnetprovider.TvShowsMagnetProvider;
+import butter.droid.base.providers.media.magnet.PelisMagnetProvider;
+import butter.droid.base.providers.media.magnet.TvShowsMagnetProvider;
 import butter.droid.base.providers.media.MediaProvider;
+import butter.droid.base.providers.media.popcorn.PelisPopcornProvider;
+import butter.droid.base.providers.media.popcorn.TvShowsPopcornProvider;
 import butter.droid.base.utils.PrefUtils;
 
 public class NavigationDrawerFragment extends Fragment implements NavigationAdapter.Callback {
@@ -140,8 +142,10 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
         //todo: make list items dynamic
         List<NavDrawerItem> navItems = new ArrayList<>();
         navItems.add(new NavDrawerItem(true));
-        navItems.add(new NavDrawerItem(getString(R.string.title_movies), R.drawable.ic_nav_movies, new PelisMagnetProvider()));
-        navItems.add(new NavDrawerItem(getString(R.string.title_shows), R.drawable.ic_nav_tv, new TvShowsMagnetProvider()));
+        navItems.add(new NavDrawerItem(getString(R.string.title_movies), getString(R.string.title_magnet), R.drawable.ic_nav_movies, new PelisMagnetProvider()));
+        navItems.add(new NavDrawerItem(getString(R.string.title_shows), getString(R.string.title_magnet), R.drawable.ic_nav_tv, new TvShowsMagnetProvider()));
+        navItems.add(new NavDrawerItem(getString(R.string.title_movies), getString(R.string.title_popcorn), R.drawable.ic_nav_movies, new PelisPopcornProvider()));
+        navItems.add(new NavDrawerItem(getString(R.string.title_shows), getString(R.string.title_popcorn), R.drawable.ic_nav_tv, new TvShowsPopcornProvider()));
         navItems.add(new NavDrawerItem(getString(R.string.title_downloaded), R.drawable.ic_nav_downloaded, new DownloadProvider()));
         navItems.add(new NavDrawerItem(getString(R.string.preferences), R.drawable.ic_nav_settings, mOnSettingsClickListener));
 
@@ -162,7 +166,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
     private NavigationAdapter.OnItemClickListener mOnItemClickListener = new NavigationAdapter.OnItemClickListener() {
         @Override
         public void onItemClick(View v, NavigationAdapter.ItemRowHolder vh, NavDrawerItem item, int position) {
-            if (null != item.getOnClickListener()) {
+            if (item.getOnClickListener() != null) {
                 item.onClick(v, vh, position);
                 return;
             }
@@ -292,7 +296,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
 
         if (mCallbacks != null) {
             NavDrawerItem navDrawerItem = mAdapter.getItem(position + 1);
-            mCallbacks.onNavigationDrawerItemSelected(navDrawerItem, null != navDrawerItem ? navDrawerItem.getTitle() : null);
+            mCallbacks.onNavigationDrawerItemSelected(navDrawerItem, navDrawerItem != null ? navDrawerItem.getTitle() : null);
         }
 
         mAdapter.notifyDataSetChanged();
@@ -319,6 +323,11 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
             mMediaProvider = mediaProvider;
         }
 
+        public NavDrawerItem(String title, String subtitle, int icon, MediaProvider mediaProvider) {
+            this(title + "(" + subtitle + ")", icon);
+            mMediaProvider = mediaProvider;
+        }
+
         public NavDrawerItem(String title, int icon, OnClickListener listener) {
             this(title, icon);
             mOnClickListener = listener;
@@ -331,9 +340,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
             mSwitchValue = isSwitch;
         }
 
-        public NavDrawerItem(boolean isHeader) {
-            mIsHeader = true;
-        }
+        public NavDrawerItem(boolean isHeader) {mIsHeader = isHeader;}
 
         public void setRowHolder(NavigationAdapter.ItemRowHolder rowHolder) {
             mRowHolder = rowHolder;

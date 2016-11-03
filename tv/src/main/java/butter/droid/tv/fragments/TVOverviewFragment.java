@@ -45,7 +45,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
+import butter.droid.base.providers.media.magnet.PelisMagnetProvider;
 import hugo.weaving.DebugLog;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Media;
@@ -313,23 +313,23 @@ public class TVOverviewFragment extends BrowseFragment implements OnItemViewClic
             case R.id.more_item_settings:
                 TVPreferencesActivity.startActivity(getActivity());
                 break;
-            case R.id.yts_filter_a_to_z:
-            case R.id.yts_filter_trending:
-            case R.id.yts_filter_release_date:
-            case R.id.yts_filter_popular_now:
-            case R.id.yts_filter_year:
-            case R.id.yts_filter_top_rated:
+            case R.id.popcorn_filter_a_to_z:
+            case R.id.popcorn_filter_trending:
+            case R.id.popcorn_filter_release_date:
+            case R.id.popcorn_filter_popular_now:
+            case R.id.popcorn_filter_year:
+            case R.id.popcorn_filter_top_rated:
                 TVMediaGridActivity.startActivity(getActivity(), moreItem.getNavInfo().getLabel(), TVMediaGridActivity.ProviderType.MOVIE, moreItem.getNavInfo().getFilter(), moreItem.getNavInfo().getOrder(), null);
                 break;
-            case R.id.eztv_filter_a_to_z:
-            case R.id.eztv_filter_trending:
-            case R.id.eztv_filter_last_updated:
-            case R.id.eztv_filter_popular_now:
-            case R.id.eztv_filter_year:
-            case R.id.eztv_filter_top_rated:
+            case R.id.tvpopcorn_filter_a_to_z:
+            case R.id.tvpopcorn_filter_trending:
+            case R.id.tvpopcorn_filter_last_updated:
+            case R.id.tvpopcorn_filter_popular_now:
+            case R.id.tvpopcorn_filter_year:
+            case R.id.tvpopcorn_filter_top_rated:
                 TVMediaGridActivity.startActivity(getActivity(), moreItem.getNavInfo().getLabel(), TVMediaGridActivity.ProviderType.SHOW, moreItem.getNavInfo().getFilter(), moreItem.getNavInfo().getOrder(), null);
                 break;
-            case R.id.yts_filter_genres:
+            case R.id.popcorn_filter_genres:
                 Toast.makeText(getActivity(), "Not implemented yet", Toast.LENGTH_LONG).show();
                 break;
         }

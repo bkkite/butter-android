@@ -35,7 +35,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
+import butter.droid.base.providers.media.magnet.PelisMagnetProvider;
 import hugo.weaving.DebugLog;
 import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Media;

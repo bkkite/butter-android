@@ -47,14 +47,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 
-import butter.droid.base.content.preferences.DefaultPlayer;
-import butter.droid.base.torrent.TorrentHealth;
-import butter.droid.base.utils.FileUtils;
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
 import butter.droid.R;
 import butter.droid.activities.MediaDetailActivity;
+import butter.droid.base.content.preferences.DefaultPlayer;
 import butter.droid.base.content.preferences.DefaultQuality;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.providers.media.models.Episode;
@@ -64,6 +59,8 @@ import butter.droid.base.providers.meta.MetaProvider;
 import butter.droid.base.providers.subs.SubsProvider;
 import butter.droid.base.torrent.Magnet;
 import butter.droid.base.torrent.StreamInfo;
+import butter.droid.base.torrent.TorrentHealth;
+import butter.droid.base.utils.FileUtils;
 import butter.droid.base.utils.FragmentUtil;
 import butter.droid.base.utils.LocaleUtils;
 import butter.droid.base.utils.PixelUtils;
@@ -74,6 +71,9 @@ import butter.droid.base.utils.ThreadUtils;
 import butter.droid.base.utils.VersionUtils;
 import butter.droid.widget.BottomSheetScrollView;
 import butter.droid.widget.OptionSelector;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class EpisodeDialogFragment extends DialogFragment {
 

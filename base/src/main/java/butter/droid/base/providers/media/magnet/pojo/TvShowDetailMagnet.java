@@ -1,4 +1,4 @@
-package butter.droid.base.providers.media.magnetprovider.pojo;
+package butter.droid.base.providers.media.magnet.pojo;
 
 import android.content.Context;
 

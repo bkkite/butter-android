@@ -19,8 +19,6 @@ package butter.droid.activities;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -37,34 +35,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 
-import butter.droid.base.providers.media.magnetprovider.PelisMagnetProvider;
 import butterknife.Bind;
 import android.support.annotation.Nullable;
 import butter.droid.BuildConfig;
 import butter.droid.R;
 import butter.droid.activities.base.ButterBaseActivity;
-import butter.droid.base.Constants;
-import butter.droid.base.beaming.BeamManager;
 import butter.droid.base.beaming.BeamPlayerNotificationService;
 import butter.droid.base.beaming.server.BeamServerService;
 import butter.droid.base.content.preferences.Prefs;
-import butter.droid.base.providers.media.models.Movie;
-import butter.droid.base.providers.subs.SubsProvider;
-import butter.droid.base.providers.subs.YSubsProvider;
 import butter.droid.base.torrent.StreamInfo;
 import butter.droid.base.utils.PrefUtils;
-import butter.droid.base.youtube.YouTubeData;
 import butter.droid.fragments.MediaContainerFragment;
 import butter.droid.fragments.NavigationDrawerFragment;
 import butter.droid.utils.ToolbarUtils;
