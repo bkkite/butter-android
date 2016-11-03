@@ -477,7 +477,7 @@ public interface PreferencesHandler {
                     .setTitleResource(R.string.storage_location)
                     .setPreferenceKey(Prefs.STORAGE_LOCATION)
                     .hasNext(true)
-                    .setDefaultValue(StorageUtils.getCacheFileLocation(context))
+                    .setDefaultValue(StorageUtils.getStorageLocation(context))
                     .setOnClickListener(new PrefItem.OnClickListener() {
                         @Override
                         public void onClick(final PrefItem item) {
