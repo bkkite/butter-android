@@ -28,9 +28,6 @@ import android.support.v7.graphics.Palette;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -42,9 +39,6 @@ import com.squareup.okhttp.Call;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import hugo.weaving.DebugLog;
 import butter.droid.R;
 import butter.droid.activities.MediaDetailActivity;
 import butter.droid.adapters.MediaGridAdapter;
@@ -57,6 +51,9 @@ import butter.droid.base.utils.NetworkUtils;
 import butter.droid.base.utils.PrefUtils;
 import butter.droid.base.utils.ThreadUtils;
 import butter.droid.fragments.dialog.LoadingDetailDialogFragment;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 /**
@@ -160,9 +157,30 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
         }
     }
 
+    private void updateList() {
+        mFilters.page = 0;
+        mCurrentCall = mProvider.getList(mItems, new MediaProvider.Filters(mFilters), mCallback);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
+        if (mProvider.isLocal()) {
+            updateList();
+        }
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        if (mProvider.isLocal()) {
+            mItems.clear();
+        }
+        super.onPause();
     }
 
     @Override
@@ -333,39 +351,50 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
         public void onSuccess(MediaProvider.Filters filters, final ArrayList<Media> items, boolean changed) {
             if (!(mGenre == null ? "" : mGenre).equals(filters.genre == null ? "" : filters.genre)) return; // nothing changed according to the provider, so don't do anything
 
-            items.removeAll(mItems);
-            if(items.size() == 0) {
+            if (mProvider.isLocal()) {
+                mItems.clear();
+                mItems.addAll(items);
+                mAdapter.setItems(mItems);
+                mPreviousTotal = mTotalItemCount = mAdapter.getItemCount();
                 mEndOfListReached = true;
-                changed = false;
-            }
-
-            if(!changed) {
                 setState(State.LOADED);
-                return;
             }
+            else
+            {
+                items.removeAll(mItems);
+                if (items.size() == 0) {
+                    mEndOfListReached = true;
+                    changed = false;
+                }
 
-            mItems.addAll(items);
-            ThreadUtils.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+                if (!changed) {
                     setState(State.LOADED);
+                    return;
                 }
-            });
 
-            //fragment may be detached, so we dont want to update the UI
-            if (!isAdded())
-                return;
+                mItems.addAll(items);
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setState(State.LOADED);
+                    }
+                });
 
-            mEndOfListReached = false;
+                //fragment may be detached, so we dont want to update the UI
+                if (!isAdded())
+                    return;
 
-            mPage = mPage + 1;
-            ThreadUtils.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mAdapter.setItems(mItems);
-                    mPreviousTotal = mTotalItemCount = mAdapter.getItemCount();
-                }
-            });
+                mEndOfListReached = false;
+
+                mPage = mPage + 1;
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.setItems(mItems);
+                        mPreviousTotal = mTotalItemCount = mAdapter.getItemCount();
+                    }
+                });
+            }
         }
 
         @Override
@@ -486,7 +515,6 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
             }
         }
     };
-
 
     /**
      * Called when loading media details fails

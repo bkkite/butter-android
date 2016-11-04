@@ -24,6 +24,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -39,8 +40,6 @@ import android.view.View;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import butterknife.Bind;
-import android.support.annotation.Nullable;
 import butter.droid.BuildConfig;
 import butter.droid.R;
 import butter.droid.activities.base.ButterBaseActivity;
@@ -53,6 +52,7 @@ import butter.droid.fragments.MediaContainerFragment;
 import butter.droid.fragments.NavigationDrawerFragment;
 import butter.droid.utils.ToolbarUtils;
 import butter.droid.widget.ScrimInsetsFrameLayout;
+import butterknife.Bind;
 
 /**
  * The main activity that houses the navigation drawer, and controls navigation between fragments

@@ -37,9 +37,9 @@ import java.util.List;
 
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
+import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.magnet.pojo.TvShowDetailMagnet;
 import butter.droid.base.providers.media.magnet.pojo.TvShowMagnet;
-import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Genre;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Show;
@@ -305,5 +305,10 @@ public class TvShowsMagnetProvider extends MediaProvider {
     @Override
     public List<Genre> getGenres() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean isLocal() {
+        return false;
     }
 }

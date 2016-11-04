@@ -37,8 +37,8 @@ import java.util.List;
 
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
-import butter.droid.base.providers.media.magnet.pojo.MovieMagnet;
 import butter.droid.base.providers.media.MediaProvider;
+import butter.droid.base.providers.media.magnet.pojo.MovieMagnet;
 import butter.droid.base.providers.media.models.Genre;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Movie;
@@ -253,5 +253,10 @@ public class PelisMagnetProvider extends MediaProvider {
     @Override
     public List<Genre> getGenres() {
         return new ArrayList<>();
+    }
+
+    @Override
+    public boolean isLocal() {
+        return false;
     }
 }

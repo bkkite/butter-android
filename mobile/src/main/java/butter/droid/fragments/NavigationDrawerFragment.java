@@ -42,9 +42,9 @@ import butter.droid.adapters.NavigationAdapter;
 import butter.droid.adapters.decorators.OneShotDividerDecorator;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.providers.media.DownloadProvider;
+import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.magnet.PelisMagnetProvider;
 import butter.droid.base.providers.media.magnet.TvShowsMagnetProvider;
-import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.popcorn.PelisPopcornProvider;
 import butter.droid.base.providers.media.popcorn.TvShowsPopcornProvider;
 import butter.droid.base.utils.PrefUtils;
@@ -324,7 +324,7 @@ public class NavigationDrawerFragment extends Fragment implements NavigationAdap
         }
 
         public NavDrawerItem(String title, String subtitle, int icon, MediaProvider mediaProvider) {
-            this(title + "(" + subtitle + ")", icon);
+            this(title + " (" + subtitle + ")", icon);
             mMediaProvider = mediaProvider;
         }
 

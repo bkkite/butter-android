@@ -245,6 +245,11 @@ public class TvShowsPopcornProvider extends MediaProvider {
         return new ArrayList<>();
     }
 
+    @Override
+    public boolean isLocal() {
+        return false;
+    }
+
     private class TVReponse {
         LinkedTreeMap<String, Object> showData;
         ArrayList<LinkedTreeMap<String, Object>> showsList;
@@ -368,13 +373,17 @@ public class TvShowsPopcornProvider extends MediaProvider {
                 show.seasons = (Integer) item.get("seasons");
                 show.tvdbId = (String) item.get("tvdb_id");
                 show.year = (String) item.get("year");
-                LinkedTreeMap<String, String> images = (LinkedTreeMap<String, String>) item.get("images");
-                if(!images.get("poster").contains("images/posterholder.png"))
-                    show.image = images.get("poster").replace("/original/", "/medium/");
-                if(!images.get("poster").contains("images/posterholder.png"))
-                    show.headerImage = images.get("fanart").replace("/original/", "/medium/");
 
-                existingList.add(show);
+                LinkedTreeMap<String, String> images = (LinkedTreeMap<String, String>) item.get("images");
+
+                if (images != null && images.size() > 0) {
+                    if (!images.get("poster").contains("images/posterholder.png"))
+                        show.image = images.get("poster").replace("/original/", "/medium/");
+                    if (!images.get("poster").contains("images/posterholder.png"))
+                        show.headerImage = images.get("fanart").replace("/original/", "/medium/");
+
+                    existingList.add(show);
+                }
             }
             return existingList;
         }

@@ -52,8 +52,7 @@ public class DownloadProvider extends MediaProvider {
             filters = new Filters();
         }
 
-        switch (filters.sort)
-        {
+        switch (filters.sort) {
             default:
             case ALPHABET:
             case DATE:
@@ -78,8 +77,8 @@ public class DownloadProvider extends MediaProvider {
     /**
      * Fetch the list of movies from YTS
      *
-     * @param currentList    Current shown list to be extended
-     * @param callback       Network callback
+     * @param currentList Current shown list to be extended
+     * @param callback    Network callback
      * @return Call
      */
 
@@ -87,10 +86,8 @@ public class DownloadProvider extends MediaProvider {
 
         Downloads.getList(ButterApplication.getAppContext(), currentList, state, sMediaProvider);
 
-        if(currentList == null) {
+        if (currentList == null) {
             callback.onFailure(new NetworkErrorException("No response"));
-        } else if(currentList == null || currentList.size() <= 0) {
-            callback.onFailure(new NetworkErrorException(ButterApplication.getAppContext().getString(R.string.movies_error)));
         } else {
             callback.onSuccess(filters, currentList, true);
         }
@@ -112,12 +109,11 @@ public class DownloadProvider extends MediaProvider {
     }
 
     @Override
-    public List<NavInfo> getNavigation()
-    {
+    public List<NavInfo> getNavigation() {
         List<NavInfo> tabs = new ArrayList<>();
-        tabs.add(new NavInfo(R.id.downloaded_filter_all,Filters.Sort.POPULARITY, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.all),R.drawable.magnet_filter_hd));
-        tabs.add(new NavInfo(R.id.downloaded_filter_not_watched,Filters.Sort.NOT_WATCHED, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.not_watched),R.drawable.ic_action_not_watched));
-        tabs.add(new NavInfo(R.id.downloaded_filter_watched,Filters.Sort.WATCHED, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.watched),R.drawable.ic_action_watched));
+        tabs.add(new NavInfo(R.id.downloaded_filter_all, Filters.Sort.POPULARITY, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.all), R.drawable.magnet_filter_hd));
+        tabs.add(new NavInfo(R.id.downloaded_filter_not_watched, Filters.Sort.NOT_WATCHED, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.not_watched), R.drawable.ic_action_not_watched));
+        tabs.add(new NavInfo(R.id.downloaded_filter_watched, Filters.Sort.WATCHED, Filters.Order.DESC, ButterApplication.getAppContext().getString(R.string.watched), R.drawable.ic_action_watched));
 
         return tabs;
     }
@@ -126,4 +122,10 @@ public class DownloadProvider extends MediaProvider {
     public List<Genre> getGenres() {
         return new ArrayList<>();
     }
+
+    @Override
+    public boolean isLocal() {
+        return true;
+    }
 }
+

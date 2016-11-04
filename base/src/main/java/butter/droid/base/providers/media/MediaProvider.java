@@ -21,9 +21,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.squareup.okhttp.Call;
 
@@ -67,6 +64,8 @@ public abstract class MediaProvider extends BaseProvider implements Parcelable {
     public abstract int getLoadingMessage();
 
     public abstract List<NavInfo> getNavigation();
+
+    public abstract boolean isLocal();
 
     public int getDefaultNavigationIndex() {
         return 0;

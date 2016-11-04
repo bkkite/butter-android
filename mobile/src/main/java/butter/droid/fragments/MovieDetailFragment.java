@@ -390,6 +390,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
                 if (delete_files)
                     FileUtils.deleteMagnetDownloadedPathVideoFiles(getContext(), sMovie.getHash(mSelectedQuality));
+
+                getActivity().finish();
             }
 
             @Override

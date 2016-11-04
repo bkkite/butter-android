@@ -216,6 +216,11 @@ public class PelisPopcornProvider extends MediaProvider {
         return new ArrayList<>();
     }
 
+    @Override
+    public boolean isLocal() {
+        return false;
+    }
+
     private class MovieResponse {
         LinkedTreeMap<String, Object> movieData;
         ArrayList<LinkedTreeMap<String, Object>> moviesList;

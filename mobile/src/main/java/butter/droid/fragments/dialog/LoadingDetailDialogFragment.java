@@ -137,6 +137,4 @@ public class LoadingDetailDialogFragment extends DialogFragment {
 
         ArrayList<Media> getCurrentList();
     }
-
-
 }
