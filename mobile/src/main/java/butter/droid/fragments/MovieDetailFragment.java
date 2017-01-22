@@ -312,13 +312,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 default: return super.onOptionsItemSelected(item);
             }
         }
-        else {
-            switch (item.getItemId()) {
-                case R.id.action_download: return downloadMagnet();
-                default:
-                    return super.onOptionsItemSelected(item);
-            }
-        }
+        else
+            return false;
     }
 
     private void renderHealth() {
