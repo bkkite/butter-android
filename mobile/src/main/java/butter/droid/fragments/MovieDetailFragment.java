@@ -263,7 +263,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 mQuality.setText(mSelectedQuality);
                 mQuality.setDefault(qualityIndex);
 
-                setHasOptionsMenu(true);
+                if (sMovie.isDownloaded() == true)
+                    setHasOptionsMenu(true);
 
                 renderHealth();
                 updateMagnet();
@@ -296,8 +297,6 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
         if (sMovie.isDownloaded() == true)
             inflater.inflate(R.menu.fragment_movie_detail_downloaded, menu);
-        else
-            inflater.inflate(R.menu.fragment_movie_detail, menu);
     }
 
     @Override
