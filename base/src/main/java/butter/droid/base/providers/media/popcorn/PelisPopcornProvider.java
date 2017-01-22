@@ -113,6 +113,9 @@ public class PelisPopcornProvider extends MediaProvider {
 
         String url = API_URLS[CURRENT_API] + "movies/";
         if (filters.page != null) {
+            if (filters.page == 0)
+                filters.page++;
+
             url += filters.page;
         } else {
             url += "1";

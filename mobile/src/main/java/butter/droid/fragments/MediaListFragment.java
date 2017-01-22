@@ -151,7 +151,7 @@ public class MediaListFragment extends Fragment implements LoadingDetailDialogFr
                 });
             mAdapter.clearItems();
             mGenre = mFilters.genre = genre;
-            mFilters.page =0;
+            mFilters.page = 0;
             mCurrentCall = mProvider.getList(new MediaProvider.Filters(mFilters), mCallback);
             setState(State.LOADING);
         }

@@ -110,6 +110,8 @@ public class TvShowsPopcornProvider extends MediaProvider {
 
         String url = API_URLS[CURRENT_API] + "shows/";
         if (filters.page != null) {
+            if (filters.page == 0)
+                filters.page++;
             url += filters.page;
         } else {
             url += "1";
