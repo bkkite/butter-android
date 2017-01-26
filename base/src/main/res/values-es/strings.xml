@@ -304,4 +304,5 @@
   <string name="select_video">Selecciona un video</string>
   <string name="msg_delete_movie">Esta acción borrará la pelicula de la Base de datos</string>
   <string name="question_delete_files">¿Quiere borrar tambíen los ficheros?</string>
+  <string name="offline_sync">Disponible offline</string>
 </resources>

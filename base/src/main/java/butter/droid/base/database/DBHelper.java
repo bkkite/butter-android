@@ -10,7 +10,7 @@ import timber.log.Timber;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String NAME = "butter.db";
-    private static final int CURRENT_VERSION = 1;
+    private static final int CURRENT_VERSION = 2;
 
     public DBHelper(Context context) {
         super(context, NAME, null, CURRENT_VERSION);
@@ -18,12 +18,13 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(Downloads.QUERY_CREATE);
+        Downloads.createTable(db);
         Timber.d("onCreate version=" + db.getVersion());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Downloads.updateTable(db, oldVersion);
         Timber.d("onUpgrade version=" + db.getVersion());
     }
 }

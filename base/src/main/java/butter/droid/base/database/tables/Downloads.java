@@ -3,6 +3,7 @@ package butter.droid.base.database.tables;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -27,6 +28,7 @@ public class Downloads implements BaseColumns {
     private static final String _HEADER_URL = "_header_url";
     private static final String _SYPNOPSIS = "_sypnopsis";
     private static final String _STATE = "_state";
+    private static final String _SYNC = "_sync";
     private static final String _SIZE = "_size";
     private static final String _SEASON = "_season";
     private static final String _EPISODE = "_episode";
@@ -38,13 +40,16 @@ public class Downloads implements BaseColumns {
     public static final String WATCHED = "watched";
     public static final String NOT_WATCHED = "NotWatched";
 
+    private static final int NOT_SYNC = 0;
+    private static final int SYNC = 1;
+
     private static final String NAME = Tables.DOWNLOADS;
     private static final Uri CONTENT_URI = DBProvider.BASE_CONTENT_URI.buildUpon().appendPath(NAME).build();
 
     public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.butter." + NAME;
     public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.butter." + NAME;
 
-    public static final String QUERY_CREATE = "CREATE TABLE " + NAME + " ("
+    private static final String QUERY_CREATE = "CREATE TABLE " + NAME + " ("
             + _ID + " INTEGER PRIMARY KEY, "
             + _TYPE + " TEXT, "
             + _VIDEOID + " TEXT, "
@@ -66,6 +71,21 @@ public class Downloads implements BaseColumns {
             + _DIRECTORY + " TEXT"
             + ")";
 
+    private static final String VERSION_1_TO_2 = "ALTER TABLE " + NAME + " ADD COLUMN " + _SYNC + " INTEGER DEFAULT 1";
+
+    public static void createTable(SQLiteDatabase db)
+    {
+        db.execSQL(Downloads.QUERY_CREATE);
+        db.execSQL(Downloads.VERSION_1_TO_2);
+    }
+
+    public static void updateTable(SQLiteDatabase db, int oldVersion)
+    {
+        if (oldVersion < 2) {
+            db.execSQL(Downloads.VERSION_1_TO_2);
+        }
+    }
+
     public static Uri buildUri(final String id) {
         return CONTENT_URI.buildUpon().appendPath(id).build();
     }
@@ -85,16 +105,40 @@ public class Downloads implements BaseColumns {
         cursorToList(currentList, cursor, mediaProvider);
     }
 
+    public static boolean isInDataBase(Context context, final Movie info)
+    {
+        if (info.videoId != null) {
+            String[] projection = {_VIDEOID};
+            String selection = Downloads._VIDEOID + "='" + info.videoId+"'";
+            Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
+
+            boolean isInDB = (cursor.getCount() > 0 ? true : false);
+            cursor.close();
+
+            return isInDB;
+        }
+        else
+            return false;
+    }
+
     public static Uri insertMovie(Context context, Movie info, String quality) {
         return context.getContentResolver().insert(CONTENT_URI, buildValuesMovie(context, info, NOT_WATCHED, quality));
     }
 
-    public static int setMovieWatched(Context context, Movie info, String quality) {
-        return context.getContentResolver().update(buildUri(info.videoId), buildValuesMovie(context, info, WATCHED, quality), null, null);
+    public static int setMovieOffline(Context context, Movie info) {
+        return context.getContentResolver().update(buildUri(info.videoId), buildSetSyncValueMovie(NOT_SYNC), null, null);
     }
 
-    public static int setMovieNotWatched(Context context, Movie info, String quality) {
-        return context.getContentResolver().update(buildUri(info.videoId), buildValuesMovie(context, info, NOT_WATCHED, quality), null, null);
+    public static int setMovieWatched(Context context, Movie info) {
+        return context.getContentResolver().update(buildUri(info.videoId), buildStateValueMovie(WATCHED), null, null);
+    }
+
+    public static int setMovieNotWatched(Context context, Movie info) {
+        return context.getContentResolver().update(buildUri(info.videoId), buildStateValueMovie(NOT_WATCHED), null, null);
+    }
+
+    public static int setMovieSync(Context context, Movie info) {
+        return context.getContentResolver().update(buildUri(info.videoId), buildSetSyncValueMovie(SYNC), null, null);
     }
 
     public static int deleteMovie(Context context, Movie info) {
@@ -174,6 +218,7 @@ public class Downloads implements BaseColumns {
         values.put(_HEADER_URL, info.headerImage);
         values.put(_SYPNOPSIS, info.synopsis);
         values.put(_STATE, state);
+        values.put(_SYNC, NOT_SYNC);
         values.put(_SIZE, "");
         values.put(_SEASON, "");
         values.put(_EPISODE, "");
@@ -185,6 +230,24 @@ public class Downloads implements BaseColumns {
             values.put(_TORRENT_HASH, torrent.hash);
             values.put(_DIRECTORY, FileUtils.getMagnetDownloadedPathVideoFile(context, torrent.hash));
         }
+
+        return values;
+    }
+
+    private static ContentValues buildStateValueMovie(String state) {
+
+        ContentValues values = new ContentValues();
+
+        values.put(_STATE, state);
+
+        return values;
+    }
+
+    private static ContentValues buildSetSyncValueMovie(int Sync) {
+
+        ContentValues values = new ContentValues();
+
+        values.put(_SYNC, Sync);
 
         return values;
     }

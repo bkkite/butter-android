@@ -91,6 +91,16 @@
                 android:visibility="gone"
                 tools:visibility="visible" />
 
+            <Switch
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/offline"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                android:text="@string/offline_sync"
+                android:textSize="@dimen/detail_meta_text_size"
+                android:autoText="true" />
+
         </LinearLayout>
 
         <com.devspark.robototextview.widget.RobotoTextView

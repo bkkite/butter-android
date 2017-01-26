@@ -60,6 +60,7 @@
 
 	<string name="subtitles">Subtitles</string>
 	<string name="now_playing">Now playing</string>
+    <string name="offline_sync">Offline</string>
 
     <!-- SettingsActivity strings -->
     <string name="preferences">Preferences</string>

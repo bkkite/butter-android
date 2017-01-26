@@ -15,10 +15,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -80,6 +83,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
     Button mWatchTrailer;
     @Bind(R.id.magnet)
     ImageButton mOpenMagnet;
+    @Bind(R.id.offline)
+    Switch mOffline;
     @Bind(R.id.rating)
     RatingBar mRating;
     @Bind(R.id.subtitles)
@@ -263,6 +268,23 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 mQuality.setText(mSelectedQuality);
                 mQuality.setDefault(qualityIndex);
 
+                mOffline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if (setOfflineContent(isChecked) == false) {
+
+                            final Snackbar snackbar = Snackbar.make(mRoot, R.string.encountered_error, Snackbar.LENGTH_LONG);
+                            snackbar.setAction(R.string.close, new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    snackbar.dismiss();
+                                }
+                            });
+                            snackbar.show();
+                        }
+                    }
+                });
+
                 if (sMovie.isDownloaded() == true)
                     setHasOptionsMenu(true);
 
@@ -308,7 +330,6 @@ public class MovieDetailFragment extends BaseDetailFragment {
             {
                 case R.id.action_not_watched: return notWatchedMovie();
                 case R.id.action_watched: return watchedMovie();
-                case R.id.action_delete: return deleteMovie();
                 default: return super.onOptionsItemSelected(item);
             }
         }
@@ -338,22 +359,32 @@ public class MovieDetailFragment extends BaseDetailFragment {
         }
     }
 
-    private boolean downloadMagnet()
+    private boolean setOfflineContent(boolean offline)
     {
         try {
-            Downloads.insertMovie(getContext(), sMovie, mSelectedQuality);
+            if (offline)
+            {
+                if (Downloads.isInDataBase(getContext(), sMovie) == false)
+                    Downloads.insertMovie(getContext(), sMovie, mSelectedQuality);
+                else
+                    Downloads.setMovieOffline(getContext(), sMovie);
+            }
+            else
+            {
+                if (Downloads.isInDataBase(getContext(), sMovie))
+                    return deleteMovie();
+            }
+
+            return true;
         }
         catch (UnsupportedOperationException e){
             e.printStackTrace();
-        }
-        finally {
-            mMagnet.open(mActivity);
-            return true;
+            return false;
         }
     }
 
     private boolean notWatchedMovie(){
-        int numUpdated = Downloads.setMovieNotWatched(getContext(), sMovie, mSelectedQuality);
+        int numUpdated = Downloads.setMovieNotWatched(getContext(), sMovie);
 
         if (numUpdated > 0)
             return true;
@@ -362,7 +393,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
     }
 
     private boolean watchedMovie(){
-        int numUpdated = Downloads.setMovieWatched(getContext(), sMovie, mSelectedQuality);
+        int numUpdated = Downloads.setMovieWatched(getContext(), sMovie);
 
         if (numUpdated > 0)
             return true;
@@ -384,8 +415,6 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
                 if (delete_files)
                     FileUtils.deleteMagnetDownloadedPathVideoFiles(getContext(), sMovie.getHash(mSelectedQuality));
-
-                getActivity().finish();
             }
 
             @Override
@@ -437,11 +466,6 @@ public class MovieDetailFragment extends BaseDetailFragment {
             StreamInfo streamInfo = new StreamInfo(sMovie, streamUrl, mSelectedSubtitleLanguage, mSelectedQuality);
             mCallback.playStream(streamInfo);
         }
-    }
-
-    @OnClick(R.id.magnet)
-    public void openMagnet() {
-        downloadMagnet();
     }
 
     @OnClick(R.id.health)
