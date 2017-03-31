@@ -228,9 +228,6 @@
   <string name="no_search_results">Няма открити резултати</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter е продукт на много разработчици и дизайнери, които събраха няколко API-та на едно място,
-за да направят гледането на торент филми, колкото се може по-просто.\n\nНие сме проект с открит сорс код. Ние сме от цял свят. Ние
-обичаме нашите филми. И със сигурност обичаме пуканки!</string>
   <string name="website">Уебсайт</string>
   <string name="forum">Форум</string>
   <string name="google_plus">Google+</string>

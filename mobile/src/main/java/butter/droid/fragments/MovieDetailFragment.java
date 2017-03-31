@@ -2,8 +2,11 @@ package butter.droid.fragments;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.text.Layout;
@@ -21,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -37,8 +39,10 @@ import butter.droid.base.content.preferences.DefaultPlayer;
 import butter.droid.base.content.preferences.DefaultQuality;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.database.tables.Downloads;
+import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.providers.subs.SubsProvider;
+import butter.droid.base.torrent.DownloadTorrentService;
 import butter.droid.base.torrent.Magnet;
 import butter.droid.base.torrent.StreamInfo;
 import butter.droid.base.torrent.TorrentHealth;
@@ -66,6 +70,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
     private String mSelectedSubtitleLanguage, mSelectedQuality;
     private Boolean mAttached = false;
     private Magnet mMagnet;
+
+    private DownloadTorrentService mService;
 
     @Bind(R.id.play_button)
     ImageButton mPlayButton;
@@ -101,7 +107,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(
+            Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
@@ -268,25 +275,23 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 mQuality.setText(mSelectedQuality);
                 mQuality.setDefault(qualityIndex);
 
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mOffline.setChecked(Downloads.isInDataBase(getContext(), sMovie));
+                    }
+                });
+
                 mOffline.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        if (setOfflineContent(isChecked) == false) {
-
-                            final Snackbar snackbar = Snackbar.make(mRoot, R.string.encountered_error, Snackbar.LENGTH_LONG);
-                            snackbar.setAction(R.string.close, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    snackbar.dismiss();
-                                }
-                            });
-                            snackbar.show();
-                        }
+                            setOfflineContent(isChecked);
                     }
                 });
 
                 if (sMovie.isDownloaded() == true)
                     setHasOptionsMenu(true);
+
 
                 renderHealth();
                 updateMagnet();
@@ -304,14 +309,21 @@ public class MovieDetailFragment extends BaseDetailFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mAttached = true;
-        if (activity instanceof FragmentListener)
+        if (activity instanceof FragmentListener) {
             mCallback = (FragmentListener) activity;
+            DownloadTorrentService.bindHere(getContext(), mServiceConnection);
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mAttached = false;
+
+        if (mService != null) {
+            getContext().unbindService(mServiceConnection);
+            mService = null;
+        }
     }
 
     @Override
@@ -356,6 +368,21 @@ public class MovieDetailFragment extends BaseDetailFragment {
             mOpenMagnet.setVisibility(View.GONE);
         } else {
             mOpenMagnet.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private boolean downloadMagnet()
+    {
+        try {
+            if (Downloads.isInDataBase(getContext(), sMovie) == false)
+                Downloads.insertMovie(getContext(), sMovie, mSelectedQuality);
+        }
+        catch (UnsupportedOperationException e){
+            e.printStackTrace();
+        }
+        finally {
+            mMagnet.open(mActivity);
+            return true;
         }
     }
 
@@ -413,6 +440,12 @@ public class MovieDetailFragment extends BaseDetailFragment {
                     getFragmentManager().popBackStack();
                 }
 
+                if (mService != null) {
+                    Media.Torrent torrent = sMovie.getTorrent(mSelectedQuality);
+                    if (torrent != null)
+                        mService.delTorrent(torrent);
+                }
+
                 if (delete_files)
                     FileUtils.deleteMagnetDownloadedPathVideoFiles(getContext(), sMovie.getHash(mSelectedQuality));
             }
@@ -468,6 +501,11 @@ public class MovieDetailFragment extends BaseDetailFragment {
         }
     }
 
+    @OnClick(R.id.magnet)
+    public void openMagnet() {
+        downloadMagnet();
+    }
+
     @OnClick(R.id.health)
     public void clickHealth() {
         int seeds = sMovie.torrents.get(mSelectedQuality).seeds;
@@ -503,4 +541,17 @@ public class MovieDetailFragment extends BaseDetailFragment {
             });
         }
     }
+
+    private ServiceConnection mServiceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            mService = ((DownloadTorrentService.ServiceBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+    };
+
 }

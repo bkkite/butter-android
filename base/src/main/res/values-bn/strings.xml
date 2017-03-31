@@ -228,10 +228,7 @@
   <string name="no_search_results">অনুসন্ধানের কোন ফলাফল পাওয়া যায়নি</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">পপকর্ন টাইম! অনেক অনেক উন্নয়নকারী এবং ডিজাইনারদের কাজের ফলাফল
-⇥⇥যা যতটা সম্ভব সহজে টরেন্ট চলচ্চিত্র দেখার অভিজ্ঞতা দিতে একসঙ্গে একগুচ্ছ API স্থাপন করে।\n\nআমরা একটি ওপেন সোর্স প্রকল্প। আমরা বিশ্বের সব জায়গা থেকে এসেছি।
-⇥⇥আমরা আমাদের চলচ্চিত্র ভালোবাসি।</string>
-  <string name="website">ওয়েবসাইট</string>
+    <string name="website">ওয়েবসাইট</string>
   <string name="forum">ফোরাম</string>
   <string name="google_plus">গুগল+</string>
   <string name="facebook">ফেসবুক</string>

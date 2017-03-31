@@ -217,9 +217,7 @@
   <string name="no_search_results">لم يتم العثور على نتائج</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">بوب كورن تايم هو مشروع مفتوح المصدر لجعل مشاهدة أفلام التورنت سهلة بقدر ما يمكن .
-نحن مجموعة من المبرمجين والمصممين من جميع أنحاء العالم، نحب الأفلام ، وبالتأكيد نحب الفشار .</string>
-  <string name="website">الموقع</string>
+    <string name="website">الموقع</string>
   <string name="forum">المنتدى</string>
   <string name="google_plus">قوقل بلس</string>
   <string name="facebook">فيسبوك</string>

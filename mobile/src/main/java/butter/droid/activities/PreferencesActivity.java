@@ -17,6 +17,7 @@
 
 package butter.droid.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,19 +39,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
 import butter.droid.R;
 import butter.droid.activities.base.ButterBaseActivity;
 import butter.droid.adapters.PreferencesListAdapter;
-import butter.droid.base.fragments.dialog.NumberPickerDialogFragment;
-import butter.droid.base.fragments.dialog.StringArraySelectorDialogFragment;
 import butter.droid.base.content.preferences.PrefItem;
 import butter.droid.base.content.preferences.PreferencesHandler;
+import butter.droid.base.fragments.dialog.NumberPickerDialogFragment;
+import butter.droid.base.fragments.dialog.StringArraySelectorDialogFragment;
 import butter.droid.base.utils.PrefUtils;
 import butter.droid.base.utils.ResourceUtils;
 import butter.droid.fragments.dialog.ColorPickerDialogFragment;
 import butter.droid.fragments.dialog.SeekBarDialogFragment;
 import butter.droid.utils.ToolbarUtils;
+import butterknife.Bind;
 
 public class PreferencesActivity extends ButterBaseActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener, PreferencesHandler {
@@ -71,8 +72,10 @@ public class PreferencesActivity extends ButterBaseActivity
         return intent;
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState, R.layout.activity_preferences);
         setSupportActionBar(toolbar);
 
@@ -179,6 +182,9 @@ public class PreferencesActivity extends ButterBaseActivity
                     } else {
                         DirectoryChooserConfig config = DirectoryChooserConfig.builder()
                                 .newDirectoryName(getString(R.string.app_name))
+                                .initialDirectory("/mnt")
+                                .allowReadOnlyDirectory(false)
+                                .allowNewDirectoryNameModification(true)
                                 .build();
 
                         final DirectoryChooserFragment directoryChooserFragment = DirectoryChooserFragment.newInstance(config);

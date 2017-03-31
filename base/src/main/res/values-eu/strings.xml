@@ -216,10 +216,7 @@
   <string name="no_search_results">Ez da bilaketa emaitzarik aurkitu</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter API mordo bat batera jarri dituzten garatzaile eta diseinatzaile baten emaitza da
-⇥⇥torrent filmak ikusteko jarduera ahalik eta arruntena izateko.\n\nKode irekiko egitasmoa gara. Mundu osokoak gara.
-⇥⇥Maite ditugu gure filmak. Eta mutil, krispetak ere maite ditugu.</string>
-  <string name="website">Webgunea</string>
+    <string name="website">Webgunea</string>
   <string name="forum">Eztabaidagunea</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

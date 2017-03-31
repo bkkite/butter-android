@@ -228,10 +228,7 @@
   <string name="no_search_results">Нема резултата претраге</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter је направљен тако што је група програмера и дизајнера саставила гомиле АПИ-ја како
-⇥⇥би искуство гледања торент филмова учинила што једноставнијим.\n\nМи смо пројекат отвореног кода. Ми смо из целог света.
-		Ми волимо наше филмове. А, брате, волимо и кокице.</string>
-  <string name="website">Веб сајт</string>
+    <string name="website">Веб сајт</string>
   <string name="forum">Форум</string>
   <string name="google_plus">Гугл+</string>
   <string name="facebook">Фејсбук</string>

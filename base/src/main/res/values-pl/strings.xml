@@ -228,10 +228,7 @@
   <string name="no_search_results">Nic nie znaleziono</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter jest rezultatem pracy wielu programistów i projektantów, którzy złożyli kilka różnych API w całość w celu
-		jak najwygodniejszego oglądania filmów i seriali.\n\nJesteśmy projektem open source. Jesteśmy z całego świata. Kochamy filmy. 
-		Oczywiście kochamy też popcorn.</string>
-  <string name="website">WWW</string>
+    <string name="website">WWW</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

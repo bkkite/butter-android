@@ -228,9 +228,6 @@
   <string name="no_search_results">No s\'han trobat resultats</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter és el resultat de molts desenvolupadors i dissenyadors ajuntant un grapat d\'APIs per tal de
-simplificar tant com es pugui l\'experiència de veure pel·lícules torrent. Som un projecte de codi obert. Som d\'arreu del món. Ens encanten
-les nostres pelis. I noi, ens encanten les crispetes.</string>
   <string name="website">Lloc web</string>
   <string name="forum">Fòrum</string>
   <string name="google_plus">Google+</string>

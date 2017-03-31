@@ -228,10 +228,7 @@
   <string name="no_search_results">Tiada keputusan gelintar ditemui</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter adalah hasil usaha ramai pembangun dan pereka yang menggabungkan beberapa API supaya
-		pengalaman menonton cereka torrent menjadi mudah.\n\nKami merupakan projek sumber terbuka. Kami berasal dari pelbagai lokasi diseluruh dunia.
-		Kami menyukai cereka. Semestinya kami menyukai popcorn.</string>
-  <string name="website">Laman Sesawang</string>
+    <string name="website">Laman Sesawang</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

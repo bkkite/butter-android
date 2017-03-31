@@ -1,10 +1,14 @@
 package butter.droid.activities;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -26,6 +30,7 @@ import butter.droid.activities.base.ButterBaseActivity;
 import butter.droid.base.beaming.BeamPlayerNotificationService;
 import butter.droid.base.beaming.server.BeamServerService;
 import butter.droid.base.content.preferences.Prefs;
+import butter.droid.base.database.tables.Downloads;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Movie;
 import butter.droid.base.providers.media.models.Show;
@@ -39,6 +44,7 @@ import butter.droid.fragments.MovieDetailFragment;
 import butter.droid.fragments.ShowDetailFragment;
 import butter.droid.fragments.base.BaseDetailFragment;
 import butter.droid.fragments.dialog.MessageDialogFragment;
+import butter.droid.sync.SyncOfflineContentAdapter;
 import butter.droid.utils.ActionBarBackground;
 import butter.droid.widget.ObservableParallaxScrollView;
 import butterknife.Bind;
@@ -49,6 +55,7 @@ public class MediaDetailActivity extends ButterBaseActivity implements BaseDetai
     private static Media sMedia;
     private Integer mHeaderHeight = 0, mToolbarHeight = 0, mTopHeight;
     private Boolean mTransparentBar = true, mIsTablet = false;
+    private DownloadTableObserver mObserver;
 
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
@@ -74,6 +81,7 @@ public class MediaDetailActivity extends ButterBaseActivity implements BaseDetai
         context.startActivity(intent);
     }
 
+    @SuppressLint("MissingSuperCall")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -159,6 +167,8 @@ public class MediaDetailActivity extends ButterBaseActivity implements BaseDetai
             public void onError() {
             }
         });
+
+         mObserver = new DownloadTableObserver(new Handler());
     }
 
     @Override
@@ -171,6 +181,14 @@ public class MediaDetailActivity extends ButterBaseActivity implements BaseDetai
         }
         BeamServerService.getServer().stop();
         BeamPlayerNotificationService.cancelNotification();
+
+        getContentResolver().registerContentObserver(Downloads.getContentUri(), true, mObserver);
+    }
+
+    @Override
+    protected void onPause() {
+        getContentResolver().unregisterContentObserver(mObserver);
+        super.onPause();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -248,4 +266,21 @@ public class MediaDetailActivity extends ButterBaseActivity implements BaseDetai
             }
         }
     };
+
+    private class DownloadTableObserver extends ContentObserver {
+
+        public DownloadTableObserver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            onChange(selfChange, null);
+        }
+
+        @Override
+        public void onChange(boolean selfChange, Uri changeUri) {
+            SyncOfflineContentAdapter.syncDataOfflineContent(getBaseContext());
+        }
+    }
 }

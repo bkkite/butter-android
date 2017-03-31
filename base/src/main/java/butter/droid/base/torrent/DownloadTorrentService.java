@@ -19,7 +19,6 @@ package butter.droid.base.torrent;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -35,45 +34,47 @@ import com.github.sv244.torrentstream.Torrent;
 import com.github.sv244.torrentstream.TorrentOptions;
 import com.github.sv244.torrentstream.TorrentStream;
 import com.github.sv244.torrentstream.listeners.TorrentListener;
-import com.sjl.foreground.Foreground;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
-import butter.droid.base.activities.TorrentActivity;
 import butter.droid.base.content.preferences.Prefs;
+import butter.droid.base.providers.media.models.Media;
+import butter.droid.base.utils.FileUtils;
 import butter.droid.base.utils.PrefUtils;
 import timber.log.Timber;
 
-public class TorrentService extends Service implements TorrentListener {
+public class DownloadTorrentService extends Service implements TorrentListener {
 
-    public static final Integer NOTIFICATION_ID = 3423423;
+    public static final Integer NOTIFICATION_ID = 4534534;
 
-    private static String WAKE_LOCK = "TorrentService_WakeLock";
+    private static String WAKE_LOCK = "DownloadTorrentService_WakeLock";
 
-    private static TorrentService sThis;
+    private static DownloadTorrentService sThis;
+
+    private List<Media.Torrent> mDownloadTorrents;
 
     private TorrentStream mTorrentStream;
     private Torrent mCurrentTorrent;
     private StreamStatus mStreamStatus;
 
-    private boolean mInForeground = false, mIsReady = false, mStopped = false;
+    private boolean mIsReady = false, mStopped = false;
 
     private IBinder mBinder = new ServiceBinder();
     private List<TorrentListener> mListener = new ArrayList<>();
 
     private PowerManager.WakeLock mWakeLock;
-    private Class mCurrentActivityClass;
-    private Timer mUpdateTimer;
+    private Timer mStartDownloading;
 
     public class ServiceBinder extends Binder {
-        public TorrentService getService() {
-            return TorrentService.this;
+        public DownloadTorrentService getService() {
+            return DownloadTorrentService.this;
         }
     }
 
@@ -81,38 +82,51 @@ public class TorrentService extends Service implements TorrentListener {
     public void onCreate() {
         super.onCreate();
         sThis = this;
-        Foreground.get().addListener(mForegroundListener);
 
         TorrentOptions options = new TorrentOptions();
         options.setRemoveFilesAfterStop(true);
         options.setMaxConnections(PrefUtils.get(this, Prefs.LIBTORRENT_CONNECTION_LIMIT, 200));
         options.setMaxDownloadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_DOWNLOAD_LIMIT, 0));
         options.setMaxUploadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_UPLOAD_LIMIT, 0));
-        options.setSaveLocation(ButterApplication.getStreamDir());
+        options.setSaveLocation(ButterApplication.getOffLineFileDir());
         mTorrentStream = TorrentStream.init(options);
+
+        mDownloadTorrents = new ArrayList<>();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mDownloadTorrents = null;
         Timber.d("onDestroy");
         if (mWakeLock != null && mWakeLock.isHeld())
             mWakeLock.release();
+
+        if (mStartDownloading != null)
+            mStartDownloading.cancel();
+
+        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.cancel(NOTIFICATION_ID);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Timber.d("onStartCommand");
+
+        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.notify(NOTIFICATION_ID, addNotificationStartService());
+
+        if(mStartDownloading == null) {
+            mStartDownloading = new Timer();
+            mStartDownloading.scheduleAtFixedRate(new StartDownloading(), 5000, 5000);
+        }
+
         return START_STICKY;
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         Timber.d("onBind");
-
-        if(mInForeground) {
-            stopForeground();
-        }
 
         return mBinder;
     }
@@ -122,43 +136,16 @@ public class TorrentService extends Service implements TorrentListener {
         super.onRebind(intent);
         Timber.d("onRebind");
 
-        if(mInForeground) {
-            stopForeground();
-        }
     }
 
-    public void setCurrentActivity(TorrentActivity activity) {
-        mCurrentActivityClass = activity.getClass();
-
-        if(mInForeground) {
-            stopForeground();
-            startForeground();
-        }
-    }
-
-    public void startForeground() {
-        if (Foreground.get().isForeground()) return;
-        if (mCurrentActivityClass == null) return;
-
-        Intent notificationIntent = new Intent(this, mCurrentActivityClass);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        Intent stopIntent = new Intent();
-        stopIntent.setAction(TorrentBroadcastReceiver.
-                STOP);
-        PendingIntent pendingStopIntent = PendingIntent.getBroadcast(this, TorrentBroadcastReceiver.REQUEST_CODE, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action stopAction = new NotificationCompat.Action.Builder(R.drawable.abc_ic_clear_mtrl_alpha, getString(R.string.stop), pendingStopIntent).build();
-
+    private Notification addNotificationStartService()
+    {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_notif_logo)
-                .setContentTitle(getString(R.string.app_name) + " - " + getString(R.string.running))
-                .setContentText(getString(R.string.tap_to_resume))
+                .setContentTitle(getString(R.string.app_name) + " - " + getString(R.string.offlineServiceRunning))
                 .setOngoing(true)
                 .setOnlyAlertOnce(true)
                 .setPriority(Notification.PRIORITY_LOW)
-                .setContentIntent(pendingIntent)
-                .addAction(stopAction)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE);
 
         if(mStreamStatus != null && mIsReady) {
@@ -170,7 +157,7 @@ public class TorrentService extends Service implements TorrentListener {
                 downloadSpeed = df.format(mStreamStatus.downloadSpeed / (1024 * 1024)) + " MB/s";
             }
             String progress = df.format(mStreamStatus.progress);
-            builder.setContentText(progress + "%, ↓" + downloadSpeed);
+            builder.setContentText(mCurrentTorrent.getVideoFile().getName() + " " + progress + "%, ↓" + downloadSpeed);
         }
 
         Notification notification = builder.build();
@@ -178,30 +165,68 @@ public class TorrentService extends Service implements TorrentListener {
         NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         notifManager.notify(NOTIFICATION_ID, notification);
-        startForeground(NOTIFICATION_ID, notification);
 
-        if(mUpdateTimer == null) {
-            mUpdateTimer = new Timer();
-            mUpdateTimer.scheduleAtFixedRate(new UpdateTask(), 5000, 5000);
+        return notification;
+    }
+
+    private boolean isTorrentToDownload(final Media.Torrent torrent)
+    {
+        for (Media.Torrent torrent_item: mDownloadTorrents) {
+            if (torrent.hash.equals(torrent.hash))
+                return true;
+        }
+
+        return false;
+    }
+
+    public void addTorrent(@NonNull final Media.Torrent torrent) {
+        Timber.d("addTorrent");
+
+        if (isTorrentToDownload(torrent) == false)
+            mDownloadTorrents.add(torrent);
+    }
+
+    public void delTorrent(@NonNull final Media.Torrent torrent) {
+        Timber.d("delTorrent");
+
+        if (mStartDownloading != null)
+            mStartDownloading.cancel();
+
+        if (isTorrentToDownload(torrent) == true) {
+
+            if (mTorrentStream.isStreaming() == true) {
+                String saveLocation = FileUtils.getMagnetDownloadedPathVideoFile(this, torrent.hash);
+
+                if (mCurrentTorrent.getSaveLocation().getAbsolutePath().startsWith(saveLocation)) {
+                    mTorrentStream.stopStream();
+                    FileUtils.deleteMagnetDownloadedPathVideoFiles(this, torrent.hash);
+
+                    try {
+                        Media.Torrent nextTorrent = mDownloadTorrents.iterator().next();
+                        downloadTorrent(nextTorrent.url, nextTorrent.hash);
+                    }
+                    catch (NoSuchElementException e)
+                    {
+                    }
+                }
+            }
+
+            mDownloadTorrents.remove(torrent);
+        }
+
+        if(mStartDownloading == null) {
+            mStartDownloading = new Timer();
+            mStartDownloading.scheduleAtFixedRate(new StartDownloading(), 5000, 5000);
         }
     }
 
-    public void stopForeground() {
-        stopForeground(true);
-        if(mUpdateTimer != null) {
-            mUpdateTimer.cancel();
-            mUpdateTimer.purge();
-            mUpdateTimer = null;
-        }
-    }
-
-    public void streamTorrent(@NonNull final String torrentUrl) {
-        Timber.d("streamTorrent");
+    private void downloadTorrent(@NonNull final String torrentUrl, @NonNull final String hash) {
+        Timber.d("downloadTorrent");
         mStopped = false;
 
         if (mTorrentStream.isStreaming()) return;
 
-        Timber.d("Starting streaming");
+        Timber.d("Starting downloading");
 
         PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
         if(mWakeLock != null && mWakeLock.isHeld()) {
@@ -216,7 +241,7 @@ public class TorrentService extends Service implements TorrentListener {
         options.setMaxConnections(PrefUtils.get(this, Prefs.LIBTORRENT_CONNECTION_LIMIT, 200));
         options.setMaxDownloadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_DOWNLOAD_LIMIT, 0));
         options.setMaxUploadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_UPLOAD_LIMIT, 0));
-        options.setSaveLocation(ButterApplication.getStreamDir());
+        options.setSaveLocation(FileUtils.getMagnetDownloadedPathVideoFile(this, hash));
         mTorrentStream.setOptions(options);
 
         mIsReady = false;
@@ -224,7 +249,7 @@ public class TorrentService extends Service implements TorrentListener {
         mTorrentStream.startStream(torrentUrl);
     }
 
-    public void stopStreaming() {
+    public void stopDownloading() {
         mStopped = true;
         mTorrentStream.removeListener(this);
 
@@ -234,15 +259,13 @@ public class TorrentService extends Service implements TorrentListener {
         if(!mTorrentStream.isStreaming())
             return;
 
-        stopForeground();
-
         mTorrentStream.stopStream();
         mIsReady = false;
 
         Timber.d("Stopped torrent and removed files if possible");
     }
 
-    public boolean isStreaming() {
+    public boolean isDownloading() {
         return mTorrentStream.isStreaming();
     }
 
@@ -267,40 +290,18 @@ public class TorrentService extends Service implements TorrentListener {
     }
 
     public static void bindHere(Context context, ServiceConnection serviceConnection) {
-        Intent torrentServiceIntent = new Intent(context, TorrentService.class);
+        Intent torrentServiceIntent = new Intent(context, DownloadTorrentService.class);
         context.bindService(torrentServiceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     public static void start(Context context) {
-        Intent torrentServiceIntent = new Intent(context, TorrentService.class);
+        Intent torrentServiceIntent = new Intent(context, DownloadTorrentService.class);
         context.startService(torrentServiceIntent);
     }
 
     protected static void stop() {
-        sThis.stopStreaming();
+        sThis.stopDownloading();
     }
-
-    private Foreground.Listener mForegroundListener = new Foreground.Listener() {
-        @Override
-        public void onBecameForeground() {
-            if (!mTorrentStream.isStreaming()) {
-                mTorrentStream.resumeSession();
-            } else {
-                mInForeground = false;
-                stopForeground();
-            }
-        }
-
-        @Override
-        public void onBecameBackground() {
-            if (!mTorrentStream.isStreaming()) {
-                mTorrentStream.pauseSession();
-            } else {
-                mInForeground = true;
-                startForeground();
-            }
-        }
-    };
 
     public Torrent getCurrentTorrent() {
         return mCurrentTorrent;
@@ -351,8 +352,11 @@ public class TorrentService extends Service implements TorrentListener {
             }
         }
 
-        if(mInForeground) {
+        {
             mStreamStatus = streamStatus;
+
+            NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            notifManager.notify(NOTIFICATION_ID, addNotificationStartService());
         }
     }
 
@@ -365,15 +369,15 @@ public class TorrentService extends Service implements TorrentListener {
         }
     }
 
-    private class UpdateTask extends TimerTask {
+    private class StartDownloading extends TimerTask {
         @Override
-        public void run() {
-            if(mInForeground) {
-                startForeground();
-            } else {
-                stopForeground();
+        public void run()
+        {
+            if (mDownloadTorrents.size() > 0 && isDownloading() == false)
+            {
+                Media.Torrent torrent = mDownloadTorrents.iterator().next();
+                downloadTorrent(torrent.url, torrent.hash);
             }
         }
     };
-
 }

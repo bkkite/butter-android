@@ -228,9 +228,7 @@
   <string name="no_search_results">Non se atoparon resultados da busca</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">O Butter é obra dun feixe de programadores e deseñadores axuntando unha morea de APIs diferentes, para conseguirmos que
-⇥⇥a túa experiencia ó veres filmes polo torrent sexa o mellor posible.\n\O noso un proxecto de código a Somos de todos os sitios do mundo. Mólannos ⇥⇥moito os días de sofá, peli e mantiña. E meu, por suposto, degoiramos uns bos flocos de millo.</string>
-  <string name="website">Sitio web</string>
+    <string name="website">Sitio web</string>
   <string name="forum">Conferencias</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

@@ -229,10 +229,7 @@
   <string name="no_search_results">Ingen søkeresultater funnet</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter er resultatet av at mange utviklere og designere har puset sammen en haug med API\'er for å
-gjøre opplevelsen av å se torrents så enkel som mulig.\n\nVi er et Åpne kildekode-prosjekt. Vi er fra hele verden. Vi
-elsker filmene våre. Og gjett om vi elsker popcorn.</string>
-  <string name="website">Nettside</string>
+    <string name="website">Nettside</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

@@ -228,10 +228,7 @@
   <string name="no_search_results">Neboli nájdené žiadne výsledky vyhľadávania</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter je výsledkom mnohých vývojárov a dizajnérov spojenia veľa API, aby
- ⇥⇥ sledovani filmov z torrentov bolo tak jednoduché, ako je to možné. \ n \n  Sme open source projekt. Sme z celého sveta. Milujeme
- ⇥⇥ filmy. A kámo, milujeme popcorn.</string>
-  <string name="website">webová stránka</string>
+    <string name="website">webová stránka</string>
   <string name="forum">Fórum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

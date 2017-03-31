@@ -61,7 +61,7 @@ public class Downloads implements BaseColumns {
             + _POSTER_URL + " TEXT, "
             + _HEADER_URL + " TEXT, "
             + _SYPNOPSIS + " TEXT, "
-            + _STATE + " INTEGER, "
+            + _STATE + " TEXT, "
             + _SIZE + " INTEGER, "
             + _SEASON + " INTEGER, "
             + _EPISODE + " INTEGER, "
@@ -86,6 +86,10 @@ public class Downloads implements BaseColumns {
         }
     }
 
+    public static Uri getContentUri() {
+        return CONTENT_URI;
+    }
+
     public static Uri buildUri(final String id) {
         return CONTENT_URI.buildUpon().appendPath(id).build();
     }
@@ -105,11 +109,41 @@ public class Downloads implements BaseColumns {
         cursorToList(currentList, cursor, mediaProvider);
     }
 
+    public static void getMediaToSync(Context context, ArrayList<Media> mediaList) throws IllegalArgumentException
+    {
+        Cursor cursor;
+        String[] projection = {_TYPE, _VIDEOID, _IMDB, _TITLE, _YEAR, _GENRE, _RATING, _POSTER_URL, _HEADER_URL, _SYPNOPSIS, _TORRENT_MAGNET, _TORRENT_QUALITY, _TORRENT_HASH, _DIRECTORY, _STATE};
+
+        String selection = Downloads._SYNC + "=" + NOT_SYNC;
+
+        cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
+
+        cursorToList(mediaList, cursor, null);
+    }
+
     public static boolean isInDataBase(Context context, final Movie info)
     {
         if (info.videoId != null) {
             String[] projection = {_VIDEOID};
             String selection = Downloads._VIDEOID + "='" + info.videoId+"'";
+            Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
+
+            boolean isInDB = (cursor.getCount() > 0 ? true : false);
+            cursor.close();
+
+            return isInDB;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isInDataBaseSync(Context context, final Movie info)
+    {
+        if (info.videoId != null) {
+            String[] projection = {_VIDEOID};
+            String selection1 = Downloads._VIDEOID + "='" + info.videoId+"'";
+            String selection2 = Downloads._SYNC + "=" + SYNC;
+            String selection = selection1 + " AND " + selection2;
             Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
 
             boolean isInDB = (cursor.getCount() > 0 ? true : false);
@@ -210,7 +244,7 @@ public class Downloads implements BaseColumns {
         values.put(_TYPE, info.type);
         values.put(_VIDEOID, info.videoId);
         values.put(_IMDB, info.imdbId);
-        values.put( _TITLE, info.title);
+        values.put(_TITLE, info.title);
         values.put(_YEAR, info.year);
         values.put(_GENRE, info.genre);
         values.put(_RATING, info.rating);

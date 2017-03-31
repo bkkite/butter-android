@@ -224,8 +224,7 @@
   <string name="no_search_results">Hakusi ei tuottanut yhtään osumaa</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter on monen kehittäjän ja suunnittelijan yhteistyön tulos. Tarkoitus on tehdä torrent-elokuvien katsomisesta mahdollisimman yksinkertaista! Olemme avoimeen lähdekoodiin perustuva projekti. Toimimme kaikkialla maailmassa. Rakastamme elokuviamme ja voi kuinka rakastammekaan popcornia.</string>
-  <string name="website">Internet-sivut</string>
+    <string name="website">Internet-sivut</string>
   <string name="forum">Foorumi</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

@@ -22,7 +22,6 @@ import android.os.Parcelable;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butter.droid.base.providers.media.MediaProvider;
@@ -71,6 +70,14 @@ public class Movie extends Media implements Parcelable {
     {
         if (this.torrents.containsKey(quality))
             return this.torrents.get(quality).hash;
+        else
+            return null;
+    }
+
+    public Media.Torrent getTorrent(final String quality)
+    {
+        if (this.torrents.containsKey(quality))
+            return this.torrents.get(quality);
         else
             return null;
     }

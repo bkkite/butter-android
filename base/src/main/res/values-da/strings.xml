@@ -228,8 +228,7 @@
   <string name="no_search_results">Ingen søgeresultater fundet</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter! er resultatet af mange udviklere og designere, som har sammensat nogle API\'er for at gøre oplevelsen af at se torrent-film så enkelt som muligt.\n\nVi er et open-source projekt. Vi er fra hele verden. Vi elsker film. Og hold da op, hvor vi elsker popcorn.</string>
-  <string name="website">Hjemmeside</string>
+    <string name="website">Hjemmeside</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

@@ -14,7 +14,7 @@ import butter.droid.base.database.tables.Tables;
 
 public class DBProvider extends ContentProvider {
 
-    public static final String CONTENT_AUTHORITY = "droid.pc.butter";
+    public static final String CONTENT_AUTHORITY = "BKTheater.com";
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     private static final int DOWNLOADS = 200;

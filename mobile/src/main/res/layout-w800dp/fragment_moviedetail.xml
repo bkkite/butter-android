@@ -50,7 +50,7 @@
                     />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/detail_rating_margin_top"
                     android:gravity="center_vertical">
@@ -86,6 +86,14 @@
                         android:scaleType="centerInside"
                         android:visibility="gone"
                         tools:visibility="visible" />
+                    <Switch
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:id="@+id/offline"
+                        android:layout_weight="1"
+                        android:gravity="right|center_vertical"
+                        android:text="@string/offline_sync"
+                        android:textSize="@dimen/detail_meta_text_size"/>
                 </LinearLayout>
 
                 <com.devspark.robototextview.widget.RobotoTextView

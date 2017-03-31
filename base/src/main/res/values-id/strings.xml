@@ -228,10 +228,7 @@
   <string name="no_search_results">Tidak dapat menemukan apapun</string>
   <string name="vpn">Jaringan Pribadi Virtual</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter adalah karya dari banyak pengembang dan desainer yang menggabungkan berbagai macam API untuk memberikan
-⇥⇥pengalaman menonton film melalui torrent semudah mungkin.\n\nKami adalah proyek terbuka. Kami berasal dari seluruh dunia. Kami
-⇥⇥mencintai film kami. Dan nak, kami juga mencintai popcorn kami.</string>
-  <string name="website">Website</string>
+    <string name="website">Website</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

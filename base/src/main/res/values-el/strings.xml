@@ -228,10 +228,7 @@
   <string name="no_search_results">Δεν βρέθηκαν αποτελέσματα αναζήτησης</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Το Butter είναι το αποτέλεσμα πολλών προγραμματιστών και σχεδιαστών που χρησιμοποίησαν αρκετά API για να κάνουν την
-		εμπειρία της προβολής ταινιών μέσω torrent όσο το δυνατόν απλούστερη.\n\nΕίμαστε ένα έργο ανοιχτού κώδικα. Είμαστε από όλο τον κόσμο.
-		Αγαπάμε τις ταινίες μας. Και ο φίλε, αγαπάμε το ποπκόρν.</string>
-  <string name="website">Ιστοσελίδα</string>
+    <string name="website">Ιστοσελίδα</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

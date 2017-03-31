@@ -228,9 +228,7 @@
   <string name="no_search_results">Ni našlo iskanih rezultatov</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter je rezultat mnogih razvijalcev in oblikovalcev kateri so združili kup API-jev skupaj, da bi omogočili
-⇥⇥izkušnjo ob gledanju filmskih torentov na najenostavnejši način.\n\nSmo odprto kodni projekt. Prihajamo iz vseh koncev sveta. Imamo ⇥⇥radi naše filme. In obožujemo kokice.</string>
-  <string name="website">Spletna stran</string>
+    <string name="website">Spletna stran</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

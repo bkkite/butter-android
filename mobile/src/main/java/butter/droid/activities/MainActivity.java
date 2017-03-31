@@ -18,7 +18,11 @@
 package butter.droid.activities;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -85,11 +89,6 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
         }
 
         {
-            //TODO: Cambiar cuando implementemos el servicio de torrents
-            /*
-                Añadir el torrent a la lista de descargados con el estado de download
-             */
-
             String action = getIntent().getAction();
             Uri data = getIntent().getData();
             if (action != null && action.equals(Intent.ACTION_VIEW) && data != null) {
@@ -124,6 +123,8 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
         if (savedInstanceState != null) return;
         int providerId = PrefUtils.get(this, Prefs.DEFAULT_VIEW, 0);
         mNavigationDrawerFragment.selectItem(providerId);
+
+        createSyncAccount(this);
     }
 
     @Override
@@ -234,4 +235,12 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
         }
     }
 
+    public void createSyncAccount(Context context) {
+        Account newAccount = new Account(context.getString(R.string.app_name), context.getString(R.string.app_name_authority));
+        AccountManager accountManager =(AccountManager) context.getSystemService(ACCOUNT_SERVICE);
+        accountManager.addAccountExplicitly(newAccount, null, null);
+
+        ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.app_name_authority), true);
+
+    }
 }

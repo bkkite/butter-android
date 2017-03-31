@@ -228,10 +228,7 @@
   <string name="no_search_results">Nenhum resultado encontrado</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">O Butter é o resultado de muitos programadores e designers combinarem uma carrada de APIs para tornar a
-		experiência de ver um filme ou uma série tão simples quanto possível.\n\nSomos um projeto de código aberto. Somos do mundo inteiro.
-		Adoramos os nossos filmes. E acredita, adoramos pipocas.</string>
-  <string name="website">Página Web</string>
+    <string name="website">Página Web</string>
   <string name="forum">Fórum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

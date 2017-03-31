@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 
 import butter.droid.base.beaming.BeamManager;
 import butter.droid.base.content.preferences.Prefs;
+import butter.droid.base.torrent.DownloadTorrentService;
 import butter.droid.base.torrent.TorrentService;
 import butter.droid.base.updater.ButterUpdater;
 import butter.droid.base.utils.FileUtils;
@@ -93,6 +94,7 @@ public class ButterApplication extends Application implements ButterUpdater.List
 
         if(VersionUtils.isUsingCorrectBuild()) {
             TorrentService.start(this);
+            DownloadTorrentService.start(this);
         }
 
         File path = StorageUtils.getCacheFileLocation(getAppContext());
@@ -156,6 +158,11 @@ public class ButterApplication extends Application implements ButterUpdater.List
         File path = StorageUtils.getCacheFileLocation(getAppContext());
         File directory = new File(path, "/torrents/");
         return directory.toString();
+    }
+
+    public static String getOffLineFileDir() {
+        File path = StorageUtils.getStorageLocation(getAppContext());
+        return path.toString();
     }
 
     @Override

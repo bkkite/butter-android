@@ -228,8 +228,7 @@
   <string name="no_search_results">Er zijn geen zoekresultaten gevonden</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter is het resultaat van vele ontwikkelaars en ontwerpers die een heleboel API\'s aan elkaar gekoppeld hebben om de ervaring van het kijken van films via torrents zo eenvoudig mogelijk te maken.</string>
-  <string name="website">Website</string>
+    <string name="website">Website</string>
   <string name="forum">Forum</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <account-authenticator
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accountType="@string/app_name"
+    android:accountType="@string/app_name_authority"
     android:icon="@drawable/ic_logo"
     android:smallIcon="@drawable/ic_logo"
-    android:label="@string/app_name"/>
+    android:label="@string/app_name">
+</account-authenticator>

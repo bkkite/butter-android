@@ -228,8 +228,7 @@
   <string name="no_search_results">検索結果が見つかりませんでした</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butterは多くの開発者とデサイナーが一緒のAPIの束を入れることで、できるだけ簡単にトレントの映画を見る体験をします。/n/n私達はオープンソースのプロジェクトです。私達は世界中にいます。私たちは映画を愛します。そして、私達はポップコーンを愛します。</string>
-  <string name="website">ウェブサイト</string>
+    <string name="website">ウェブサイト</string>
   <string name="forum">フォーラム</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>

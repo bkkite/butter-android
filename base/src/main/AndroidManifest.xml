@@ -4,6 +4,7 @@
 	<application>
 
 		<service android:name="butter.droid.base.torrent.TorrentService" />
+		<service android:name="butter.droid.base.torrent.DownloadTorrentService" />
 
 	</application>
 

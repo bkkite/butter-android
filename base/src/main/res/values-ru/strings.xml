@@ -231,10 +231,7 @@
   <string name="no_search_results">Результаты поиска не найдены</string>
   <string name="vpn">VPN</string>
   <!--AboutFragment-->
-  <string name="about_message">Butter - результат работы разработчиков  и дизайнеров, сложивших многие API в одно целоe
-для удобного просмотра фильмов через торренты.\n\nЭто проект с открытым исходным кодом. Мылюбим смотреть фильмы. 
-А также любим похрустеть попкорном.</string>
-  <string name="website">Вебсайт</string>
+    <string name="website">Вебсайт</string>
   <string name="forum">Форум</string>
   <string name="google_plus">Google+</string>
   <string name="facebook">Facebook</string>
