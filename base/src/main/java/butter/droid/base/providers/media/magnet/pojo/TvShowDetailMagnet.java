@@ -14,7 +14,6 @@ import butter.droid.base.providers.media.MediaProvider;
 import butter.droid.base.providers.media.models.Episode;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.providers.media.models.Show;
-import butter.droid.base.utils.FileUtils;
 
 public class TvShowDetailMagnet {
 
@@ -165,7 +164,7 @@ public class TvShowDetailMagnet {
                         torrent.url = capitulo.links.magnet;
                         torrent.hash = capitulo.links.hash;
                         torrent.seeds = torrent.peers = 0;
-                        torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
+                        torrent.isDownloaded = false;
                         episodeObject.torrents.put(capitulo.links.calitat, torrent);
                     }
 
@@ -179,7 +178,7 @@ public class TvShowDetailMagnet {
                         torrent.url = capitulo.links.magnet;
                         torrent.hash = capitulo.links.hash;
                         torrent.seeds = torrent.peers = 0;
-                        torrent.isDownloaded = FileUtils.getMagnetIsDownloaded(context, torrent.hash);
+                        torrent.isDownloaded = false;
                         episodeObject.torrents.put(capitulo.links.calitat, torrent);
                     }
                 }

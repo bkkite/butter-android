@@ -121,7 +121,7 @@ public class Downloads implements BaseColumns {
         cursorToList(mediaList, cursor, null);
     }
 
-    public static boolean isInDataBase(Context context, final Movie info)
+    public static boolean isMovieInDataBase(Context context, final Movie info)
     {
         if (info.videoId != null) {
             String[] projection = {_VIDEOID};
@@ -137,13 +137,50 @@ public class Downloads implements BaseColumns {
             return false;
     }
 
-    public static boolean isInDataBaseSync(Context context, final Movie info)
+    public static boolean isTorrentMovieInDataBase(Context context, final Movie info, final String hash)
+    {
+        if (info.videoId != null) {
+            String[] projection = {_VIDEOID};
+            String selection1 = Downloads._VIDEOID + "='" + info.videoId+"'";
+            String selection2 = Downloads._TORRENT_HASH + "='" + hash+"'";
+            String selection = selection1 + " AND " + selection2;
+            Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
+
+            boolean isInDB = (cursor.getCount() > 0 ? true : false);
+            cursor.close();
+
+            return isInDB;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isMovieInDataBaseSync(Context context, final Movie info)
     {
         if (info.videoId != null) {
             String[] projection = {_VIDEOID};
             String selection1 = Downloads._VIDEOID + "='" + info.videoId+"'";
             String selection2 = Downloads._SYNC + "=" + SYNC;
             String selection = selection1 + " AND " + selection2;
+            Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
+
+            boolean isInDB = (cursor.getCount() > 0 ? true : false);
+            cursor.close();
+
+            return isInDB;
+        }
+        else
+            return false;
+    }
+
+    public static boolean isTorrentMovieInDataBaseSync(Context context, final Movie info, final String hash)
+    {
+        if (info.videoId != null) {
+            String[] projection = {_VIDEOID};
+            String selection1 = Downloads._VIDEOID + "='" + info.videoId+"'";
+            String selection2 = Downloads._TORRENT_HASH + "='" + hash+"'";
+            String selection3 = Downloads._SYNC + "=" + SYNC;
+            String selection = selection1 + " AND " + selection2 + " AND " + selection3;
             Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
 
             boolean isInDB = (cursor.getCount() > 0 ? true : false);

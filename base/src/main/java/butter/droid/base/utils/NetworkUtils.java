@@ -37,7 +37,12 @@ public class NetworkUtils {
     public static boolean isWifiConnected(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) return false;
-        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).isConnected();
+
+        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (networkInfo != null)
+            return networkInfo.isConnected();
+        else
+            return false;
     }
 
     /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +55,12 @@ public class NetworkUtils {
     public static boolean isEthernetConnected(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager == null) return false;
-        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET).isConnected();
+
+        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_ETHERNET);
+        if (networkInfo != null)
+            return networkInfo.isConnected();
+        else
+            return false;
     }
 
 	/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

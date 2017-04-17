@@ -68,7 +68,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
     private static Movie sMovie;
     private String mSelectedSubtitleLanguage, mSelectedQuality;
-    private Boolean mAttached = false;
+    private Boolean mAttached = false, mDownloadSync = false;
     private Magnet mMagnet;
 
     private DownloadTorrentService mService;
@@ -278,7 +278,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 ThreadUtils.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mOffline.setChecked(Downloads.isInDataBase(getContext(), sMovie));
+                        mOffline.setChecked(Downloads.isMovieInDataBase(getContext(), sMovie));
                     }
                 });
 
@@ -289,9 +289,15 @@ public class MovieDetailFragment extends BaseDetailFragment {
                     }
                 });
 
-                if (sMovie.isDownloaded() == true)
-                    setHasOptionsMenu(true);
-
+                ThreadUtils.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String hash = sMovie.getHash(mSelectedQuality);
+                        mDownloadSync = Downloads.isTorrentMovieInDataBaseSync(getContext(), sMovie, hash);
+                        if (mDownloadSync)
+                            setHasOptionsMenu(true);
+                    }
+                });
 
                 renderHealth();
                 updateMagnet();
@@ -329,14 +335,14 @@ public class MovieDetailFragment extends BaseDetailFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
 
-        if (sMovie.isDownloaded() == true)
+        if (mDownloadSync)
             inflater.inflate(R.menu.fragment_movie_detail_downloaded, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (sMovie.isDownloaded())
+        if (mDownloadSync)
         {
             switch (item.getItemId())
             {
@@ -374,7 +380,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
     private boolean downloadMagnet()
     {
         try {
-            if (Downloads.isInDataBase(getContext(), sMovie) == false)
+            if (Downloads.isMovieInDataBase(getContext(), sMovie) == false)
                 Downloads.insertMovie(getContext(), sMovie, mSelectedQuality);
         }
         catch (UnsupportedOperationException e){
@@ -391,14 +397,14 @@ public class MovieDetailFragment extends BaseDetailFragment {
         try {
             if (offline)
             {
-                if (Downloads.isInDataBase(getContext(), sMovie) == false)
+                if (Downloads.isMovieInDataBase(getContext(), sMovie) == false)
                     Downloads.insertMovie(getContext(), sMovie, mSelectedQuality);
                 else
                     Downloads.setMovieOffline(getContext(), sMovie);
             }
             else
             {
-                if (Downloads.isInDataBase(getContext(), sMovie))
+                if (Downloads.isMovieInDataBase(getContext(), sMovie))
                     return deleteMovie();
             }
 
@@ -479,7 +485,7 @@ public class MovieDetailFragment extends BaseDetailFragment {
 
     @OnClick(R.id.play_button)
     public void play() {
-        if (sMovie.torrents.get(mSelectedQuality).isDownloaded == true)
+        if (mDownloadSync)
         {
             final ArrayList<String> video_files = FileUtils.getMagnetDownloadedVideoFiles(mActivity, sMovie.torrents.get(mSelectedQuality).hash);
 
