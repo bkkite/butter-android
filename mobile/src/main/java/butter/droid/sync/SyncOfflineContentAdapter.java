@@ -62,22 +62,23 @@ public class SyncOfflineContentAdapter extends AbstractThreadedSyncAdapter {
     {
         DownloadTorrentService.bindHere(mContext, mServiceConnection);
 
-        ArrayList<Media> mediaToSync = new ArrayList<>();
-        Downloads.getMediaToSync(mContext, mediaToSync);
-
-        for (Media media: mediaToSync)
+        if (mService != null)
         {
-            Movie movie = (Movie) media;
-            final Set<String> keys = movie.torrents.keySet();
+            ArrayList<Media> mediaToSync = new ArrayList<>();
+            Downloads.getMediaToSync(mContext, mediaToSync);
 
-            for (String key: keys)
+            for (Media media: mediaToSync)
             {
-                final Media.Torrent torrent = movie.torrents.get(key);
-                mService.addTorrent(torrent);
-            }
-        }
+                Movie movie = (Movie) media;
+                final Set<String> keys = movie.torrents.keySet();
 
-        if (mService != null) {
+                for (String key: keys)
+                {
+                    final Media.Torrent torrent = movie.torrents.get(key);
+                    mService.addTorrent(torrent);
+                }
+            }
+
             mContext.unbindService(mServiceConnection);
             mService = null;
         }

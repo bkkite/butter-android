@@ -10,7 +10,7 @@ import timber.log.Timber;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String NAME = "butter.db";
-    private static final int CURRENT_VERSION = 2;
+    private static final int CURRENT_VERSION = 3;
 
     public DBHelper(Context context) {
         super(context, NAME, null, CURRENT_VERSION);

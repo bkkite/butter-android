@@ -37,6 +37,7 @@ import com.github.sv244.torrentstream.listeners.TorrentListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Timer;
@@ -45,6 +46,7 @@ import java.util.TimerTask;
 import butter.droid.base.ButterApplication;
 import butter.droid.base.R;
 import butter.droid.base.content.preferences.Prefs;
+import butter.droid.base.database.tables.Downloads;
 import butter.droid.base.providers.media.models.Media;
 import butter.droid.base.utils.FileUtils;
 import butter.droid.base.utils.PrefUtils;
@@ -59,15 +61,15 @@ public class DownloadTorrentService extends Service implements TorrentListener {
     private static DownloadTorrentService sThis;
 
     private List<Media.Torrent> mDownloadTorrents;
+    private Media.Torrent mMediaTorrent;
 
     private TorrentStream mTorrentStream;
     private Torrent mCurrentTorrent;
     private StreamStatus mStreamStatus;
 
-    private boolean mIsReady = false, mStopped = false;
+    private boolean mShowProgress = false;
 
     private IBinder mBinder = new ServiceBinder();
-    private List<TorrentListener> mListener = new ArrayList<>();
 
     private PowerManager.WakeLock mWakeLock;
     private Timer mStartDownloading;
@@ -148,7 +150,7 @@ public class DownloadTorrentService extends Service implements TorrentListener {
                 .setPriority(Notification.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_SERVICE);
 
-        if(mStreamStatus != null && mIsReady) {
+        if (mStreamStatus != null && mShowProgress) {
             String downloadSpeed;
             DecimalFormat df = new DecimalFormat("#############0.00");
             if (mStreamStatus.downloadSpeed / 1024 < 1000) {
@@ -157,7 +159,9 @@ public class DownloadTorrentService extends Service implements TorrentListener {
                 downloadSpeed = df.format(mStreamStatus.downloadSpeed / (1024 * 1024)) + " MB/s";
             }
             String progress = df.format(mStreamStatus.progress);
-            builder.setContentText(mCurrentTorrent.getVideoFile().getName() + " " + progress + "%, ↓" + downloadSpeed);
+
+            builder.setContentText(mCurrentTorrent.getVideoFile().getName().substring(0, 20) + "... " + progress + "%, ↓" + downloadSpeed);
+            builder.setProgress(mDownloadTorrents.size(), mDownloadTorrents.indexOf(mMediaTorrent), false);
         }
 
         Notification notification = builder.build();
@@ -172,7 +176,7 @@ public class DownloadTorrentService extends Service implements TorrentListener {
     private boolean isTorrentToDownload(final Media.Torrent torrent)
     {
         for (Media.Torrent torrent_item: mDownloadTorrents) {
-            if (torrent.hash.equals(torrent.hash))
+            if (torrent.hash.equals(torrent_item.hash))
                 return true;
         }
 
@@ -184,6 +188,29 @@ public class DownloadTorrentService extends Service implements TorrentListener {
 
         if (isTorrentToDownload(torrent) == false)
             mDownloadTorrents.add(torrent);
+
+        if(mStartDownloading == null) {
+            mStartDownloading = new Timer();
+            mStartDownloading.scheduleAtFixedRate(new StartDownloading(), 5000, 5000);
+        }
+    }
+
+    private void popTorrentToDownload()
+    {
+        try {
+
+            Iterator<Media.Torrent> iterator = mDownloadTorrents.iterator();
+            mMediaTorrent = iterator.next();
+
+            iterator.remove();
+        }
+        catch (NoSuchElementException e)
+        {
+            mMediaTorrent = null;
+        }
+        finally {
+            downloadTorrent(mMediaTorrent.url, mMediaTorrent.hash);
+        }
     }
 
     public void delTorrent(@NonNull final Media.Torrent torrent) {
@@ -194,24 +221,19 @@ public class DownloadTorrentService extends Service implements TorrentListener {
 
         if (isTorrentToDownload(torrent) == true) {
 
-            if (mTorrentStream.isStreaming() == true) {
-                String saveLocation = FileUtils.getMagnetDownloadedPathVideoFile(this, torrent.hash);
+            if (mTorrentStream.isStreaming() == true){
 
-                if (mCurrentTorrent.getSaveLocation().getAbsolutePath().startsWith(saveLocation)) {
+                if (mMediaTorrent != null && mMediaTorrent.hash.equals(torrent.hash) == true) {
                     mTorrentStream.stopStream();
                     FileUtils.deleteMagnetDownloadedPathVideoFiles(this, torrent.hash);
 
-                    try {
-                        Media.Torrent nextTorrent = mDownloadTorrents.iterator().next();
-                        downloadTorrent(nextTorrent.url, nextTorrent.hash);
-                    }
-                    catch (NoSuchElementException e)
-                    {
-                    }
+                    popTorrentToDownload();
                 }
+                else
+                    mDownloadTorrents.remove(torrent);
             }
-
-            mDownloadTorrents.remove(torrent);
+            else
+                mDownloadTorrents.remove(torrent);
         }
 
         if(mStartDownloading == null) {
@@ -222,7 +244,6 @@ public class DownloadTorrentService extends Service implements TorrentListener {
 
     private void downloadTorrent(@NonNull final String torrentUrl, @NonNull final String hash) {
         Timber.d("downloadTorrent");
-        mStopped = false;
 
         if (mTorrentStream.isStreaming()) return;
 
@@ -237,20 +258,20 @@ public class DownloadTorrentService extends Service implements TorrentListener {
         mWakeLock.acquire();
 
         TorrentOptions options = mTorrentStream.getOptions();
-        options.setRemoveFilesAfterStop(true);
+        options.setRemoveFilesAfterStop(false);
         options.setMaxConnections(PrefUtils.get(this, Prefs.LIBTORRENT_CONNECTION_LIMIT, 200));
         options.setMaxDownloadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_DOWNLOAD_LIMIT, 0));
         options.setMaxUploadSpeed(PrefUtils.get(this, Prefs.LIBTORRENT_UPLOAD_LIMIT, 0));
         options.setSaveLocation(FileUtils.getMagnetDownloadedPathVideoFile(this, hash));
         mTorrentStream.setOptions(options);
 
-        mIsReady = false;
+        mShowProgress = false;
         mTorrentStream.addListener(this);
         mTorrentStream.startStream(torrentUrl);
     }
 
     public void stopDownloading() {
-        mStopped = true;
+
         mTorrentStream.removeListener(this);
 
         if (mWakeLock != null && mWakeLock.isHeld())
@@ -260,7 +281,7 @@ public class DownloadTorrentService extends Service implements TorrentListener {
             return;
 
         mTorrentStream.stopStream();
-        mIsReady = false;
+        mShowProgress = false;
 
         Timber.d("Stopped torrent and removed files if possible");
     }
@@ -269,25 +290,6 @@ public class DownloadTorrentService extends Service implements TorrentListener {
         return mTorrentStream.isStreaming();
     }
 
-    public boolean isReady() {
-        return mIsReady;
-    }
-
-    public boolean checkStopped() {
-        if(mStopped) {
-            mStopped = false;
-            return true;
-        }
-        return false;
-    }
-
-    public void addListener(@NonNull TorrentListener listener) {
-        mListener.add(listener);
-    }
-
-    public void removeListener(@NonNull TorrentListener listener) {
-        mListener.remove(listener);
-    }
 
     public static void bindHere(Context context, ServiceConnection serviceConnection) {
         Intent torrentServiceIntent = new Intent(context, DownloadTorrentService.class);
@@ -303,70 +305,53 @@ public class DownloadTorrentService extends Service implements TorrentListener {
         sThis.stopDownloading();
     }
 
-    public Torrent getCurrentTorrent() {
-        return mCurrentTorrent;
-    }
-
-    public String getCurrentTorrentUrl() {
-        return mTorrentStream.getCurrentTorrentUrl();
-    }
-
     @Override
     public void onStreamPrepared(Torrent torrent) {
         mCurrentTorrent = torrent;
-
-        for(TorrentListener listener : mListener) {
-            listener.onStreamPrepared(torrent);
-        }
+        mCurrentTorrent.startDownload();
     }
 
     @Override
     public void onStreamStarted(Torrent torrent) {
-        for(TorrentListener listener : mListener) {
-            listener.onStreamStarted(torrent);
-        }
+
     }
 
     @Override
     public void onStreamError(Torrent torrent, Exception e) {
-        for(TorrentListener listener : mListener) {
-            listener.onStreamError(torrent, e);
-        }
+
+        if (mMediaTorrent != null)
+            FileUtils.deleteMagnetDownloadedPathVideoFiles(this, mMediaTorrent.hash);
+
+        if (isDownloading() == true)
+            stopDownloading();
     }
 
     @Override
     public void onStreamReady(Torrent torrent) {
         mCurrentTorrent = torrent;
-        mIsReady = true;
-
-        for(TorrentListener listener : mListener) {
-            listener.onStreamReady(torrent);
-        }
+        mShowProgress = true;
     }
 
     @Override
     public void onStreamProgress(Torrent torrent, StreamStatus streamStatus) {
-        for(TorrentListener listener : mListener) {
-            if (null != listener) {
-                listener.onStreamProgress(torrent, streamStatus);
-            }
-        }
+        mStreamStatus = streamStatus;
 
+        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.notify(NOTIFICATION_ID, addNotificationStartService());
+
+        if (mStreamStatus.progress >= 100. && isDownloading() == true)
         {
-            mStreamStatus = streamStatus;
-
-            NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            notifManager.notify(NOTIFICATION_ID, addNotificationStartService());
+            Downloads.setMovieSync(this, mMediaTorrent.hash);
+            stopDownloading();
         }
     }
 
     @Override
     public void onStreamStopped() {
-        for(TorrentListener listener : mListener) {
-            if (listener != null) {
-                listener.onStreamStopped();
-            }
-        }
+
+        NotificationManager notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.notify(NOTIFICATION_ID, addNotificationStartService());
+
     }
 
     private class StartDownloading extends TimerTask {
@@ -374,10 +359,7 @@ public class DownloadTorrentService extends Service implements TorrentListener {
         public void run()
         {
             if (mDownloadTorrents.size() > 0 && isDownloading() == false)
-            {
-                Media.Torrent torrent = mDownloadTorrents.iterator().next();
-                downloadTorrent(torrent.url, torrent.hash);
-            }
+                popTorrentToDownload();
         }
     };
 }

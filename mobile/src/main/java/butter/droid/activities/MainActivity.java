@@ -54,6 +54,7 @@ import butter.droid.base.torrent.StreamInfo;
 import butter.droid.base.utils.PrefUtils;
 import butter.droid.fragments.MediaContainerFragment;
 import butter.droid.fragments.NavigationDrawerFragment;
+import butter.droid.sync.SyncOfflineContentAdapter;
 import butter.droid.utils.ToolbarUtils;
 import butter.droid.widget.ScrimInsetsFrameLayout;
 import butterknife.Bind;
@@ -241,6 +242,6 @@ public class MainActivity extends ButterBaseActivity implements NavigationDrawer
         accountManager.addAccountExplicitly(newAccount, null, null);
 
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.app_name_authority), true);
-
+        SyncOfflineContentAdapter.syncDataOfflineContent(this);
     }
 }

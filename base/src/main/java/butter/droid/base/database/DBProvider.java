@@ -19,6 +19,7 @@ public class DBProvider extends ContentProvider {
 
     private static final int DOWNLOADS = 200;
     private static final int DOWNLOADS_ID = 201;
+    private static final int DOWNLOADS_HASH = 202;
 
     private DBHelper mHelper;
     private UriMatcher mUriMatcher = buildUriMatcher();
@@ -28,6 +29,7 @@ public class DBProvider extends ContentProvider {
 
         matcher.addURI(CONTENT_AUTHORITY, Tables.DOWNLOADS, DOWNLOADS);
         matcher.addURI(CONTENT_AUTHORITY, Tables.DOWNLOADS + "/#", DOWNLOADS_ID);
+        matcher.addURI(CONTENT_AUTHORITY, Tables.DOWNLOADS + "/hash/*", DOWNLOADS_HASH);
 
         return matcher;
     }
@@ -43,8 +45,11 @@ public class DBProvider extends ContentProvider {
         switch (mUriMatcher.match(uri)) {
             case DOWNLOADS:
                 return Downloads.CONTENT_TYPE;
+
             case DOWNLOADS_ID:
+            case DOWNLOADS_HASH:
                 return Downloads.CONTENT_ITEM_TYPE;
+
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
@@ -62,6 +67,8 @@ public class DBProvider extends ContentProvider {
             case DOWNLOADS_ID:
                 cursor = db.query(Tables.DOWNLOADS, projection, selectionDownloadWithId(selection, uri.getLastPathSegment()), selectionArgs, null, null, sortOrder);
                 break;
+
+            case DOWNLOADS_HASH:
             default:
                 throw new UnsupportedOperationException("Wrong uri: " + uri);
         }
@@ -83,6 +90,9 @@ public class DBProvider extends ContentProvider {
                 long downloadId = db.insert(Tables.DOWNLOADS, null, values);
                 insertUri = Downloads.buildUri(Long.toString(downloadId));
                 break;
+
+            case DOWNLOADS_HASH:
+            case DOWNLOADS_ID:
             default:
                 throw new UnsupportedOperationException("Wrong uri: " + uri);
         }
@@ -104,6 +114,8 @@ public class DBProvider extends ContentProvider {
             case DOWNLOADS_ID:
                 itemDeletedCount = db.delete(Tables.DOWNLOADS, selectionDownloadWithId(selection, uri.getLastPathSegment()), selectionArgs);
                 break;
+
+            case DOWNLOADS_HASH:
             default:
                 throw new UnsupportedOperationException("Wrong uri: " + uri);
         }
@@ -122,9 +134,15 @@ public class DBProvider extends ContentProvider {
             case DOWNLOADS:
                 itemUpdatedCount = db.update(Tables.DOWNLOADS, values, selection, selectionArgs);
                 break;
+
             case DOWNLOADS_ID:
                 itemUpdatedCount = db.update(Tables.DOWNLOADS, values, selectionDownloadWithId(selection, uri.getLastPathSegment()), selectionArgs);
                 break;
+
+            case DOWNLOADS_HASH:
+                itemUpdatedCount = db.update(Tables.DOWNLOADS, values, selectionDownloadWithHash(uri.getLastPathSegment()), selectionArgs);
+                break;
+
             default:
                 throw new UnsupportedOperationException("Wrong uri: " + uri);
         }
@@ -144,4 +162,11 @@ public class DBProvider extends ContentProvider {
         return selection;
     }
 
+    private String selectionDownloadWithHash(String hash) {
+        if (TextUtils.isEmpty(hash)) {
+            return Downloads._TORRENT_HASH + "=" + hash;
+        } else {
+            return null;
+        }
+    }
 }

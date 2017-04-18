@@ -34,7 +34,7 @@ public class Downloads implements BaseColumns {
     private static final String _EPISODE = "_episode";
     private static final String _TORRENT_MAGNET = "_torrent_magnet";
     private static final String _TORRENT_QUALITY = "_torrent_quality";
-    private static final String _TORRENT_HASH = "_torrent_hash";
+    public static final String _TORRENT_HASH = "_torrent_hash";
     private static final String _DIRECTORY = "_directory";
 
     public static final String WATCHED = "watched";
@@ -72,18 +72,22 @@ public class Downloads implements BaseColumns {
             + ")";
 
     private static final String VERSION_1_TO_2 = "ALTER TABLE " + NAME + " ADD COLUMN " + _SYNC + " INTEGER DEFAULT 1";
+    private static final String VERSION_2_TO_3 =  "UPDATE " + NAME +" SET " + _SYNC + " = 1 WHERE "+ _SYNC + " = 0";
 
     public static void createTable(SQLiteDatabase db)
     {
         db.execSQL(Downloads.QUERY_CREATE);
         db.execSQL(Downloads.VERSION_1_TO_2);
+        db.execSQL(Downloads.VERSION_2_TO_3);
     }
 
     public static void updateTable(SQLiteDatabase db, int oldVersion)
     {
-        if (oldVersion < 2) {
+        if (oldVersion < 2)
             db.execSQL(Downloads.VERSION_1_TO_2);
-        }
+
+        if (oldVersion < 3)
+            db.execSQL(Downloads.VERSION_2_TO_3);
     }
 
     public static Uri getContentUri() {
@@ -92,6 +96,10 @@ public class Downloads implements BaseColumns {
 
     public static Uri buildUri(final String id) {
         return CONTENT_URI.buildUpon().appendPath(id).build();
+    }
+
+    public static Uri buildUriHash(final String hash) {
+        return CONTENT_URI.buildUpon().appendPath("hash").appendPath(hash).build();
     }
 
     public static void getList(Context context, ArrayList<Media> currentList, final String state, MediaProvider mediaProvider) throws IllegalArgumentException
@@ -126,24 +134,6 @@ public class Downloads implements BaseColumns {
         if (info.videoId != null) {
             String[] projection = {_VIDEOID};
             String selection = Downloads._VIDEOID + "='" + info.videoId+"'";
-            Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
-
-            boolean isInDB = (cursor.getCount() > 0 ? true : false);
-            cursor.close();
-
-            return isInDB;
-        }
-        else
-            return false;
-    }
-
-    public static boolean isTorrentMovieInDataBase(Context context, final Movie info, final String hash)
-    {
-        if (info.videoId != null) {
-            String[] projection = {_VIDEOID};
-            String selection1 = Downloads._VIDEOID + "='" + info.videoId+"'";
-            String selection2 = Downloads._TORRENT_HASH + "='" + hash+"'";
-            String selection = selection1 + " AND " + selection2;
             Cursor cursor = context.getContentResolver().query(CONTENT_URI, projection, selection, null, null);
 
             boolean isInDB = (cursor.getCount() > 0 ? true : false);
@@ -208,8 +198,8 @@ public class Downloads implements BaseColumns {
         return context.getContentResolver().update(buildUri(info.videoId), buildStateValueMovie(NOT_WATCHED), null, null);
     }
 
-    public static int setMovieSync(Context context, Movie info) {
-        return context.getContentResolver().update(buildUri(info.videoId), buildSetSyncValueMovie(SYNC), null, null);
+    public static int setMovieSync(Context context, String hash) {
+        return context.getContentResolver().update(buildUriHash(hash), buildSetSyncValueMovie(SYNC), null, null);
     }
 
     public static int deleteMovie(Context context, Movie info) {
