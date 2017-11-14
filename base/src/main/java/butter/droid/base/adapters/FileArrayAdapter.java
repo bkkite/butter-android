@@ -26,9 +26,9 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import butter.droid.base.adapters.models.Option;
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butter.droid.base.adapters.models.Option;
 
 public class FileArrayAdapter extends ArrayAdapter<Option> {
 

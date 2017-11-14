@@ -41,6 +41,9 @@ import com.connectsdk.service.capability.MediaPlayer;
 import com.connectsdk.service.capability.VolumeControl;
 import com.connectsdk.service.capability.listeners.ResponseListener;
 import com.connectsdk.service.command.ServiceCommandError;
+import com.github.bkkite.torrentstream.StreamStatus;
+import com.github.bkkite.torrentstream.Torrent;
+import com.github.bkkite.torrentstream.listeners.TorrentListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -49,12 +52,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import butterknife.ButterKnife;
-import butterknife.Bind;
-import butterknife.OnClick;
-import com.github.sv244.torrentstream.StreamStatus;
-import com.github.sv244.torrentstream.Torrent;
-import com.github.sv244.torrentstream.listeners.TorrentListener;
 import butter.droid.R;
 import butter.droid.activities.BeamPlayerActivity;
 import butter.droid.activities.VideoPlayerActivity;
@@ -69,6 +66,9 @@ import butter.droid.base.utils.VersionUtils;
 import butter.droid.fragments.dialog.LoadingBeamingDialogFragment;
 import butter.droid.fragments.dialog.OptionDialogFragment;
 import butter.droid.widget.SeekBar;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 public class BeamPlayerFragment extends Fragment implements TorrentListener {

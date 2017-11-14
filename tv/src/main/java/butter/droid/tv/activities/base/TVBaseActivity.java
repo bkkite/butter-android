@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
-import com.github.sv244.torrentstream.Torrent;
+import com.github.bkkite.torrentstream.Torrent;
 
 import butter.droid.base.updater.ButterUpdater;
 import butter.droid.base.utils.VersionUtils;

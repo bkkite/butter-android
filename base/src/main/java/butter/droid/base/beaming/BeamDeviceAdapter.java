@@ -41,10 +41,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import butterknife.ButterKnife;
-import butterknife.Bind;
 import butter.droid.base.R;
 import butter.droid.base.utils.ThreadUtils;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class BeamDeviceAdapter extends BaseAdapter {
 

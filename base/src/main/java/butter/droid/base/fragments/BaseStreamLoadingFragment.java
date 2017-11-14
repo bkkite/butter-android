@@ -22,13 +22,12 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
-import com.github.sv244.torrentstream.StreamStatus;
-import com.github.sv244.torrentstream.Torrent;
-import com.github.sv244.torrentstream.listeners.TorrentListener;
+import com.github.bkkite.torrentstream.StreamStatus;
+import com.github.bkkite.torrentstream.Torrent;
+import com.github.bkkite.torrentstream.listeners.TorrentListener;
 
 import java.util.Map;
 
-import hugo.weaving.DebugLog;
 import butter.droid.base.R;
 import butter.droid.base.activities.TorrentActivity;
 import butter.droid.base.beaming.server.BeamServer;
@@ -44,6 +43,7 @@ import butter.droid.base.torrent.StreamInfo;
 import butter.droid.base.torrent.TorrentService;
 import butter.droid.base.utils.PrefUtils;
 import butter.droid.base.utils.ThreadUtils;
+import hugo.weaving.DebugLog;
 
 
 /**

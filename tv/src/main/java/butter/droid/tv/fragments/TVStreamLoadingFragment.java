@@ -44,12 +44,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.github.sv244.torrentstream.StreamStatus;
+import com.github.bkkite.torrentstream.StreamStatus;
 
 import java.text.DecimalFormat;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
 import butter.droid.base.fragments.BaseStreamLoadingFragment;
 import butter.droid.base.providers.media.models.Show;
 import butter.droid.base.torrent.StreamInfo;
@@ -58,6 +56,8 @@ import butter.droid.tv.R;
 import butter.droid.tv.activities.TVStreamLoadingActivity;
 import butter.droid.tv.activities.TVVideoPlayerActivity;
 import butter.droid.tv.utils.BackgroundUpdater;
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class TVStreamLoadingFragment extends BaseStreamLoadingFragment {
 

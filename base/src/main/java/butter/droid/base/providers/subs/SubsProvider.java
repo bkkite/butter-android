@@ -36,7 +36,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import butter.droid.base.ButterApplication;
-import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.providers.BaseProvider;
 import butter.droid.base.providers.media.models.Episode;
 import butter.droid.base.providers.media.models.Media;
@@ -46,7 +45,6 @@ import butter.droid.base.subs.FormatASS;
 import butter.droid.base.subs.FormatSRT;
 import butter.droid.base.subs.TimedTextObject;
 import butter.droid.base.utils.FileUtils;
-import butter.droid.base.utils.PrefUtils;
 import butter.droid.base.utils.StorageUtils;
 
 public abstract class SubsProvider extends BaseProvider {

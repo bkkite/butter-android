@@ -23,12 +23,12 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import butter.droid.base.providers.media.models.Episode;
+import butter.droid.base.providers.media.models.Movie;
 import de.timroes.axmlrpc.XMLRPCCallback;
 import de.timroes.axmlrpc.XMLRPCClient;
 import de.timroes.axmlrpc.XMLRPCException;
 import de.timroes.axmlrpc.XMLRPCServerException;
-import butter.droid.base.providers.media.models.Episode;
-import butter.droid.base.providers.media.models.Movie;
 
 public class OpenSubsProvider extends SubsProvider {
 

@@ -27,7 +27,6 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,7 +45,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import butter.droid.base.content.UnicodeBOMInputStream;
-import butter.droid.base.content.preferences.Prefs;
 
 public class FileUtils {
 

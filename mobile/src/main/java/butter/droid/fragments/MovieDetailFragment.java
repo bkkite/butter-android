@@ -292,8 +292,8 @@ public class MovieDetailFragment extends BaseDetailFragment {
                 ThreadUtils.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String hash = sMovie.getHash(mSelectedQuality);
-                        mDownloadSync = Downloads.isTorrentMovieInDataBaseSync(getContext(), sMovie, hash);
+
+                        mDownloadSync = prv_mDownloadSync();
                         if (mDownloadSync)
                             setHasOptionsMenu(true);
                     }
@@ -309,6 +309,19 @@ public class MovieDetailFragment extends BaseDetailFragment {
         }
 
         return mRoot;
+    }
+
+    private boolean prv_mDownloadSync()
+    {
+        if (Downloads.isTorrentMovieInDataBaseSync(getContext(), sMovie, sMovie.getHash(mSelectedQuality)) == true)
+            return true;
+
+        final ArrayList<String> video_files = FileUtils.getMagnetDownloadedVideoFiles(mActivity, sMovie.torrents.get(mSelectedQuality).hash);
+
+        if (video_files.isEmpty() == false)
+            return true;
+
+        return false;
     }
 
     @Override

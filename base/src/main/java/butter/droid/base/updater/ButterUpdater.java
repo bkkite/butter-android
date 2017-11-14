@@ -47,15 +47,15 @@ import java.util.Observable;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-import okio.BufferedSink;
-import okio.Okio;
 import butter.droid.base.BuildConfig;
-import butter.droid.base.Constants;
 import butter.droid.base.ButterApplication;
+import butter.droid.base.Constants;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.utils.NetworkUtils;
 import butter.droid.base.utils.PrefUtils;
 import butter.droid.base.utils.VersionUtils;
+import okio.BufferedSink;
+import okio.Okio;
 
 public class ButterUpdater extends Observable {
 

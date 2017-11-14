@@ -24,8 +24,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.View;
 
-import it.gmariotti.changelibs.library.view.ChangeLogRecyclerView;
 import butter.droid.base.R;
+import it.gmariotti.changelibs.library.view.ChangeLogRecyclerView;
 
 public class ChangeLogDialogFragment extends DialogFragment {
 

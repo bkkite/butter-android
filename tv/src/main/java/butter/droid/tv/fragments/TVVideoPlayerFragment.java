@@ -45,16 +45,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.github.sv244.torrentstream.StreamStatus;
-import com.github.sv244.torrentstream.Torrent;
+import com.github.bkkite.torrentstream.StreamStatus;
+import com.github.bkkite.torrentstream.Torrent;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.lang.ref.WeakReference;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 import butter.droid.base.content.preferences.Prefs;
 import butter.droid.base.fragments.BaseVideoPlayerFragment;
 import butter.droid.base.providers.media.models.Media;
@@ -74,6 +71,9 @@ import butter.droid.tv.events.StartPlaybackEvent;
 import butter.droid.tv.events.StreamProgressChangedEvent;
 import butter.droid.tv.events.ToggleSubtitleEvent;
 import butter.droid.tv.events.UpdatePlaybackStateEvent;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 public class TVVideoPlayerFragment extends BaseVideoPlayerFragment {
     @Bind(R.id.video_surface)

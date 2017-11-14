@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: 'libs', include: ['*.jar, *.aar'])
     compile 'com.android.support:multidex:1.0.1'
 
     compile "com.android.support:support-v4:${rootProject.ext.appCompatVersion}"
@@ -63,9 +63,10 @@ dependencies {
 
     compile 'com.koushikdutta.async:androidasync:2.1.6'
 
-    compile 'com.github.sv244:torrentstream-android:1.1.1'
-
     compile 'de.timroes:aXMLRPC:1.8.1'
+
+    compile 'com.github.bkkite:torrentStream-android:1.0.0'
+    compile group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
 
     compile project(':vlc')
     compile project(':connectsdk')

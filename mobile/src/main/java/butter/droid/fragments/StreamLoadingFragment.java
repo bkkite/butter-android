@@ -33,28 +33,28 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.github.sv244.torrentstream.StreamStatus;
-import com.github.sv244.torrentstream.Torrent;
+import com.github.bkkite.torrentstream.StreamStatus;
+import com.github.bkkite.torrentstream.Torrent;
 import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import hugo.weaving.DebugLog;
 import butter.droid.R;
 import butter.droid.activities.BeamPlayerActivity;
 import butter.droid.activities.VideoPlayerActivity;
 import butter.droid.base.beaming.BeamManager;
+import butter.droid.base.content.preferences.DefaultPlayer;
 import butter.droid.base.fragments.BaseStreamLoadingFragment;
 import butter.droid.base.fragments.dialog.StringArraySelectorDialogFragment;
-import butter.droid.base.content.preferences.DefaultPlayer;
 import butter.droid.base.torrent.StreamInfo;
 import butter.droid.base.utils.FragmentUtil;
 import butter.droid.base.utils.PixelUtils;
 import butter.droid.base.utils.ThreadUtils;
 import butter.droid.base.utils.VersionUtils;
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import hugo.weaving.DebugLog;
 
 public class StreamLoadingFragment extends BaseStreamLoadingFragment {
 
@@ -119,7 +119,7 @@ public class StreamLoadingFragment extends BaseStreamLoadingFragment {
             StringArraySelectorDialogFragment.show(getChildFragmentManager(), R.string.select_file, mCurrentTorrent.getFileNames(), -1, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int position) {
-                    mCurrentTorrent.setSelectedFile(position);
+                    mCurrentTorrent.setSelectedFileIndex(position);
                     StreamLoadingFragment.super.onStreamPrepared(mCurrentTorrent);
                 }
             });
